@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Attendance — AMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root{
+          --mint:#e8f5ef; --forest:#1b4332; --forest2:#2d6a4f;
+          --teal:#2a9d7f; --teal-l:#52b788; --teal-pale:#d8f3dc;
+          --white:#fff; --text:#1b3a2d; --muted:#6b8f77; --border:#c8e6d0;
+          --red:#c0392b; --red-pale:#fdecea;
+          --shadow:0 8px 40px rgba(27,67,50,0.13); --r:16px;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'DM Sans',sans-serif;min-height:100vh;background:var(--mint);display:flex;justify-content:center;align-items:flex-start;padding:24px;}
+        .card{background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;width:100%;max-width:860px;margin:auto;}
+        .hdr{background:linear-gradient(135deg,var(--forest) 60%,var(--forest2));padding:20px 28px;display:flex;align-items:center;gap:14px;}
+        .hdr-logo-box{width:40px;height:40px;border:1.5px solid rgba(255,255,255,0.35);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:20px;color:#fff;font-weight:600;}
+        .hdr-text{flex:1;}
+        .hdr-title{font-size:17px;font-weight:600;color:#fff;letter-spacing:2px;}
+        .hdr-sub{font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:2px;margin-top:2px;text-transform:uppercase;}
+        .back-btn{background:transparent;border:1.5px solid rgba(255,255,255,0.5);color:#fff;padding:7px 16px;border-radius:7px;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background .2s;font-family:'DM Sans',sans-serif;}
+        .back-btn:hover{background:rgba(255,255,255,0.15);}
+        .body{padding:32px 28px 28px;}
+        .page-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:400;color:var(--text);text-align:center;margin-bottom:4px;}
+        .page-sub{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:24px;}
+
+        .filter-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+        .time-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+        .time-row span{color:var(--muted);font-size:13px;}
+        input,select{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s;font-family:'DM Sans',sans-serif;background:var(--white);}
+        input:focus,select:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(42,157,127,0.12);}
+        select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b8f77' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+        .time-select{width:auto !important;min-width:70px;}
+        .time-input{width:auto !important;min-width:110px;}
+
+        .load-btn{width:100%;padding:12px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--forest),var(--forest2));color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:14px;letter-spacing:.3px;transition:opacity .2s;font-family:'DM Sans',sans-serif;}
+        .load-btn:hover{opacity:.88;}
+
+        .search-bar{padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;width:100%;margin-bottom:14px;outline:none;font-family:'DM Sans',sans-serif;color:var(--text);transition:border-color .2s,box-shadow .2s;}
+        .search-bar:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(42,157,127,0.12);}
+
+        .tbl-wrap{border-radius:10px;overflow:hidden;border:1.5px solid var(--border);margin-bottom:16px;}
+        table{width:100%;border-collapse:collapse;}
+        thead tr{background:var(--forest);}
+        th{padding:11px 14px;font-size:12px;font-weight:600;color:#fff;letter-spacing:.5px;text-transform:uppercase;text-align:left;}
+        td{padding:11px 14px;font-size:13px;color:var(--text);border-top:1px solid var(--border);vertical-align:middle;}
+        .row-present td{background:#f0fbf6;}
+        .row-absent td{background:#fef6f5;}
+        tr:hover td{filter:brightness(.97);}
+
+        /* Custom checkbox */
+        .chk-wrap{display:flex;justify-content:center;}
+        .chk-wrap input[type=checkbox]{width:18px;height:18px;accent-color:var(--teal);cursor:pointer;}
+
+        .status-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+        .badge-present{background:var(--teal-pale);color:var(--forest);}
+        .badge-absent{background:var(--red-pale);color:var(--red);}
+
+        .update-btn{width:100%;padding:13px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--teal),var(--teal-l));color:#fff;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.3px;transition:opacity .2s;font-family:'DM Sans',sans-serif;}
+        .update-btn:hover{opacity:.88;}
+        .empty{text-align:center;color:var(--muted);padding:24px;font-size:13px;}
+        @media(max-width:600px){.filter-grid{grid-template-columns:1fr;}.time-row{flex-direction:column;align-items:stretch;}}
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="hdr">
+        <div class="hdr-logo-box">A</div>
+        <div class="hdr-text">
+            <div class="hdr-title">AMS</div>
+            <div class="hdr-sub">Attendance Management</div>
+        </div>
+        <button class="back-btn" onclick="goBack()">← Back</button>
+    </div>
+    <div class="body">
+        <div class="page-title">Edit Attendance</div>
+        <div class="page-sub">Modify Attendance Records</div>
+
+        <div class="filter-grid">
+            <div>
+                <label style="display:block;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;">Date</label>
+                <input type="date" id="date">
+            </div>
+            <div>
+                <label style="display:block;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;">Subject</label>
+                <select id="subjectSelect"><option value="">Select Subject</option></select>
+            </div>
+        </div>
+
+        <div style="margin-bottom:14px;">
+            <label style="display:block;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:7px;">Time Range</label>
+            <div class="time-row">
+                <input type="time" id="fromTime" class="time-input">
+                <select id="fromAmPm" class="time-select"><option value="AM">AM</option><option value="PM">PM</option></select>
+                <span>to</span>
+                <input type="time" id="toTime" class="time-input">
+                <select id="toAmPm" class="time-select"><option value="AM">AM</option><option value="PM">PM</option></select>
+            </div>
+        </div>
+
+        <button class="load-btn" onclick="loadAttendance()">Load Records</button>
+
+        <input type="text" class="search-bar" id="search" placeholder="🔍  Search by name or roll number…" oninput="searchAttendance()">
+
+        <div class="tbl-wrap">
+            <table>
+                <thead><tr><th>Roll No</th><th>Student Name</th><th>Status</th><th>Mark Present</th></tr></thead>
+                <tbody id="tbody"><tr><td colspan="4" class="empty">Load attendance records to begin editing.</td></tr></tbody>
+            </table>
+        </div>
+
+        <button class="update-btn" onclick="updateAttendance()">Save Changes</button>
+    </div>
+</div>
+<script>
+    function goBack(){
+      let role=localStorage.getItem("role");
+      if(role==="teacher") window.location.href="teacher-dashboard.html";
+      else window.location.href="admin-dashboard.html";
+    }
+
+    let attendanceData=[];let filteredData=[];
+    fetch("http://localhost:8080/getSubjects").then(r=>r.json()).then(data=>{
+      let s=document.getElementById("subjectSelect");
+      data.forEach(sub=>{let o=document.createElement("option");o.value=sub.subject;o.text=sub.subject;s.appendChild(o);});
+    });
+    function loadAttendance(){
+      let date=document.getElementById("date").value;
+      let subject=document.getElementById("subjectSelect").value;
+      let fromTime=document.getElementById("fromTime").value;
+      let fromAmPm=document.getElementById("fromAmPm").value;
+      let toTime=document.getElementById("toTime").value;
+      let toAmPm=document.getElementById("toAmPm").value;
+      if(!date||!subject||!fromTime||!toTime){alert("Please fill all fields.");return;}
+      let time=fromTime+" "+fromAmPm+" - "+toTime+" "+toAmPm;
+      fetch(`http://localhost:8080/getAttendance?date=${date}&subject=${subject}&time=${encodeURIComponent(time)}`)
+      .then(r=>r.json()).then(data=>{attendanceData=data;filteredData=[...data];renderTable(filteredData);});
+    }
+    function renderTable(data){
+      let tb=document.getElementById("tbody");
+      if(!data.length){tb.innerHTML='<tr><td colspan="4" class="empty">No records found.</td></tr>';return;}
+      tb.innerHTML=data.map(a=>`
+        <tr class="${a.status==='Present'?'row-present':'row-absent'}" id="row-${a.rollno}">
+          <td>${a.rollno}</td>
+          <td>${a.name}</td>
+          <td><span class="status-badge ${a.status==='Present'?'badge-present':'badge-absent'}" id="badge-${a.rollno}">${a.status}</span></td>
+          <td><div class="chk-wrap"><input type="checkbox" ${a.status==='Present'?'checked':''} onchange="toggle(${a.rollno},this)"></div></td>
+        </tr>`).join('');
+    }
+    function toggle(rollno,cb){
+      let rec=attendanceData.find(a=>a.rollno===rollno);
+      if(rec){
+        rec.status=cb.checked?"Present":"Absent";
+        let row=document.getElementById("row-"+rollno);
+        let badge=document.getElementById("badge-"+rollno);
+        row.className=cb.checked?"row-present":"row-absent";
+        badge.className="status-badge "+(cb.checked?"badge-present":"badge-absent");
+        badge.innerText=rec.status;
+      }
+    }
+    function searchAttendance(){
+      let val=document.getElementById("search").value.toLowerCase();
+      filteredData=attendanceData.filter(a=>a.name.toLowerCase().includes(val)||a.rollno.toString().includes(val));
+      renderTable(filteredData);
+    }
+    function updateAttendance(){
+      fetch("http://localhost:8080/updateAttendance",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(attendanceData)})
+      .then(r=>r.text()).then(msg=>alert(msg));
+    }
+</script>
+</body>
+</html>

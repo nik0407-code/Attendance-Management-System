@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Teacher — AMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root{
+          --mint:#e8f5ef; --forest:#1b4332; --forest2:#2d6a4f;
+          --teal:#2a9d7f; --teal-l:#52b788; --teal-pale:#d8f3dc;
+          --white:#fff; --text:#1b3a2d; --muted:#6b8f77; --border:#c8e6d0;
+          --red:#c0392b; --red-pale:#fdecea;
+          --shadow:0 8px 40px rgba(27,67,50,0.13); --r:16px;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'DM Sans',sans-serif;min-height:100vh;background:var(--mint);display:flex;justify-content:center;align-items:center;padding:24px;}
+        .card{background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;width:100%;max-width:460px;}
+        .hdr{background:linear-gradient(135deg,var(--forest) 60%,var(--forest2));padding:20px 28px;display:flex;align-items:center;gap:14px;}
+        .hdr-logo-box{width:40px;height:40px;border:1.5px solid rgba(255,255,255,0.35);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:20px;color:#fff;font-weight:600;}
+        .hdr-text{flex:1;}
+        .hdr-title{font-size:17px;font-weight:600;color:#fff;letter-spacing:2px;}
+        .hdr-sub{font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:2px;margin-top:2px;text-transform:uppercase;}
+        .back-btn{background:transparent;border:1.5px solid rgba(255,255,255,0.5);color:#fff;padding:7px 16px;border-radius:7px;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background .2s;font-family:'DM Sans',sans-serif;}
+        .back-btn:hover{background:rgba(255,255,255,0.15);}
+        .body{padding:32px 28px 28px;}
+        .page-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:400;color:var(--text);text-align:center;margin-bottom:4px;}
+        .page-sub{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:24px;}
+        .field{margin-bottom:12px;}
+        label{display:block;font-size:12px;font-weight:600;color:var(--muted);letter-spacing:.5px;margin-bottom:5px;text-transform:uppercase;}
+        input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;color:var(--text);background:var(--white);transition:border-color .2s,box-shadow .2s;outline:none;font-family:'DM Sans',sans-serif;}
+        input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(42,157,127,0.12);}
+        .btn{width:100%;padding:13px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--forest),var(--forest2));color:#fff;font-size:14px;font-weight:600;cursor:pointer;margin-top:6px;letter-spacing:.5px;transition:opacity .2s,transform .1s;font-family:'DM Sans',sans-serif;}
+        .btn:hover{opacity:.9;transform:translateY(-1px);}
+        .msg{margin-top:14px;text-align:center;font-size:13px;padding:10px 14px;border-radius:8px;}
+        .success{color:#1a6b3c;background:var(--teal-pale);}
+        .error{color:var(--red);background:var(--red-pale);}
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="hdr">
+        <div class="hdr-logo-box">A</div>
+        <div class="hdr-text">
+            <div class="hdr-title">AMS</div>
+            <div class="hdr-sub">Attendance Management</div>
+        </div>
+        <button class="back-btn" onclick="location.href='admin-dashboard.html'">← Back</button>
+    </div>
+    <div class="body">
+        <div class="page-title">Add Teacher</div>
+        <div class="page-sub">Faculty Registration</div>
+        <div class="field"><label>Full Name</label><input type="text" id="name" placeholder="Enter teacher's name"></div>
+        <div class="field"><label>Email Address</label><input type="email" id="email" placeholder="teacher@email.com"></div>
+        <div class="field"><label>Password</label><input type="password" id="password" placeholder="Set a password"></div>
+        <button class="btn" onclick="addTeacher()">Add Teacher</button>
+        <div id="msg" class="msg" style="display:none;"></div>
+    </div>
+</div>
+<script>
+    function addTeacher(){
+      let name=document.getElementById("name").value.trim();
+      let email=document.getElementById("email").value.trim();
+      let password=document.getElementById("password").value.trim();
+      let msg=document.getElementById("msg");
+      msg.style.display="block";
+      if(!name||!email||!password){msg.innerText="All fields are required.";msg.className="msg error";return;}
+      fetch("http://localhost:8080/addTeacher",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,email,password,role:"Teacher"})})
+      .then(res=>res.text())
+      .then(res=>{
+        if(res.toLowerCase().includes("success")){msg.innerText=res;msg.className="msg success";setTimeout(()=>location.reload(),1500);}
+        else{msg.innerText=res;msg.className="msg error";}
+      })
+      .catch(()=>{msg.innerText="Server error. Please try again.";msg.className="msg error";});
+    }
+</script>
+</body>
+</html>

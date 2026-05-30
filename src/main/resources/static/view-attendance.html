@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Attendance — AMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+
+        body {
+          font-family: 'DM Sans', 'Segoe UI', sans-serif;
+          min-height: 100vh;
+          background: #e8f5ee;
+          padding: 40px 20px;
+        }
+
+        /* ── CARD ── */
+        .container {
+          width: 900px;
+          max-width: 100%;
+          margin: 0 auto;
+          border-radius: 18px;
+          overflow: hidden;
+          box-shadow:
+            0 0 0 1px rgba(15,110,86,0.12),
+            0 12px 40px rgba(15,110,86,0.1),
+            0 2px 8px rgba(0,0,0,0.06);
+          background: #fff;
+          animation: fadeUp 0.5s ease both;
+        }
+
+        @keyframes fadeUp {
+          from { opacity:0; transform:translateY(20px); }
+          to   { opacity:1; transform:none; }
+        }
+
+        /* ── HEADER ── */
+        .header {
+          background: linear-gradient(135deg, #074a30 0%, #0f6e56 60%, #1d9e75 100%);
+          padding: 14px 24px;
+          position: relative;
+          overflow: hidden;
+          border-bottom: 1px solid rgba(157,225,203,0.15);
+        }
+
+        .header::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0;
+          height: 2px;
+          background: linear-gradient(90deg, transparent, #9fe1cb, #5dcaa5, transparent);
+        }
+
+        .header::after {
+          content: '';
+          position: absolute;
+          top: -40px; right: -40px;
+          width: 160px; height: 160px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(157,225,203,0.1), transparent 70%);
+          pointer-events: none;
+        }
+
+        .header-bar {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          position: relative;
+          z-index: 2;
+        }
+
+        .header-brand {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .logo-mark {
+          width: 36px; height: 36px;
+          border: 1.5px solid rgba(157,225,203,0.55);
+          border-radius: 8px;
+          display: flex; align-items: center; justify-content: center;
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 18px;
+          color: #9fe1cb;
+          background: rgba(255,255,255,0.07);
+        }
+
+        .brand-text { display:flex; flex-direction:column; }
+
+        .brand-name {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 20px; font-weight: 600;
+          color: #e8faf4; letter-spacing: 3px; line-height: 1;
+        }
+
+        .brand-sub {
+          font-size: 9px; color: rgba(157,225,203,0.55);
+          letter-spacing: 2.5px; text-transform: uppercase; margin-top: 2px;
+        }
+
+        .header-title {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 18px; font-weight: 300;
+          color: #e8faf4; letter-spacing: 1px;
+        }
+
+        .btn-back {
+          font-family: 'DM Sans', sans-serif;
+          font-size: 10px; font-weight: 600;
+          letter-spacing: 2px; text-transform: uppercase;
+          padding: 8px 18px; border-radius: 6px;
+          border: 1.5px solid rgba(157,225,203,0.45);
+          background: transparent; color: #9fe1cb;
+          cursor: pointer; transition: all 0.2s;
+          display: inline-flex; align-items: center; gap: 6px;
+        }
+
+        .btn-back:hover {
+          background: rgba(157,225,203,0.12);
+          border-color: rgba(157,225,203,0.8);
+          color: #e8faf4;
+        }
+
+        /* ── CONTENT ── */
+        .content { padding: 28px 28px 36px; background: #fff; }
+
+        .page-title {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 24px; font-weight: 300;
+          color: #0a3d28; text-align: center; margin-bottom: 4px;
+        }
+
+        .page-sub {
+          font-size: 9px; letter-spacing: 4px;
+          text-transform: uppercase; color: #0f6e56;
+          text-align: center; margin-bottom: 24px;
+        }
+
+        /* ── SEARCH BAR ── */
+        .search-wrap {
+          background: #f2fbf7;
+          border: 1px solid #c8ead8;
+          border-radius: 12px;
+          padding: 16px 18px;
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 10px;
+          margin-bottom: 20px;
+        }
+
+        .search-wrap input,
+        .search-wrap select {
+          font-family: 'DM Sans', sans-serif;
+          font-size: 12px;
+          padding: 10px 14px;
+          border: 1px solid #c8ead8;
+          border-radius: 8px;
+          background: #fff;
+          color: #0a3d28;
+          outline: none;
+          transition: border-color 0.2s, box-shadow 0.2s;
+          appearance: none;
+        }
+
+        .search-wrap input::placeholder { color: #a0c4b2; }
+
+        .search-wrap input:focus,
+        .search-wrap select:focus {
+          border-color: #5dcaa5;
+          box-shadow: 0 0 0 3px rgba(93,202,165,0.12);
+        }
+
+        /* ── TABLE WRAP ── */
+        .table-wrap {
+          border: 1px solid #c8ead8;
+          border-radius: 12px;
+          overflow: hidden;
+        }
+
+        .table-top {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 12px 18px;
+          background: #edf9f3;
+          border-bottom: 1px solid #c8ead8;
+        }
+
+        .table-top strong {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 15px; font-weight: 400; color: #0a3d28;
+        }
+
+        .table-count {
+          font-size: 10px; color: #7ab89a; letter-spacing: 1px;
+        }
+
+        .table-scroll { overflow-x: auto; }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+
+        thead th {
+          background: #edf9f3;
+          color: #0f6e56;
+          font-size: 9px; font-weight: 500;
+          letter-spacing: 2px; text-transform: uppercase;
+          padding: 12px 16px; text-align: left;
+          border-bottom: 1px solid #9fe1cb;
+        }
+
+        tbody td {
+          font-size: 13px; color: #3a6a50;
+          padding: 11px 16px;
+          border-bottom: 1px solid #e4f5ec;
+          text-align: left;
+        }
+
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover td { background: #f2fbf7; }
+
+        /* status badges */
+        .badge {
+          display: inline-block;
+          font-size: 10px; font-weight: 500;
+          letter-spacing: 0.5px;
+          padding: 3px 10px;
+          border-radius: 100px;
+        }
+
+        .badge-present { background: #e4f7ef; color: #0f6e56; }
+        .badge-absent  { background: #fce8e8; color: #a32d2d; }
+        .badge-late    { background: #e6f8f3; color: #1d9e75; }
+        .badge-leave   { background: #f0fdf9; color: #5dcaa5; }
+
+        /* empty state */
+        .empty-state {
+          text-align: center;
+          padding: 48px 20px;
+          color: #7ab89a;
+        }
+
+        .empty-state svg { opacity: 0.35; margin-bottom: 12px; }
+
+        .empty-state p {
+          font-size: 12px; letter-spacing: 2px;
+          text-transform: uppercase;
+        }
+
+        /* mint divider */
+        .mint-line {
+          height: 1px;
+          background: linear-gradient(90deg, transparent, #9fe1cb, transparent);
+          margin: 20px 0; opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-bar">
+            <div class="header-brand">
+                <div class="logo-mark">A</div>
+                <div class="brand-text">
+                    <div class="brand-name">AMS</div>
+                    <div class="brand-sub">Attendance Management</div>
+                </div>
+            </div>
+
+            <div class="header-title">Attendance Records</div>
+
+            <button class="btn-back" onclick="history.back()">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M19 12H5M12 5l-7 7 7 7"/>
+                </svg>
+                Back
+            </button>
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <div class="page-title">Attendance List</div>
+        <div class="page-sub">Student Portal</div>
+
+        <!-- SEARCH -->
+        <div class="search-wrap">
+            <input type="text"  id="searchNameRoll" placeholder="Search Name / Roll No">
+            <select id="searchSubject">
+                <option value="">All Subjects</option>
+            </select>
+            <input type="date" id="searchDate">
+            <input type="time" id="searchTime">
+        </div>
+
+        <div class="mint-line"></div>
+
+        <!-- TABLE -->
+        <div class="table-wrap">
+            <div class="table-top">
+                <strong>Records</strong>
+                <span class="table-count" id="tableCount">— records</span>
+            </div>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Roll No</th>
+                        <th>Name</th>
+                        <th>Contact</th>
+                        <th>Subject</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody id="attendanceTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const API = "http://localhost:8080";
+    let attendanceData = [];
+
+    /* ── LOAD SUBJECTS ── */
+    async function loadSubjects() {
+      try {
+        const res = await fetch(`${API}/subjects`);
+        if (!res.ok) throw new Error("API error");
+        const data = await res.json();
+        const dd = document.getElementById("searchSubject");
+        dd.innerHTML = `<option value="">All Subjects</option>`;
+        data.forEach(sub => {
+          dd.innerHTML += `<option value="${sub.subject}">${sub.subject}</option>`;
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    /* ── LOAD ATTENDANCE ── */
+    async function loadAttendance() {
+      try {
+        const res = await fetch(`${API}/attendance`);
+        const data = await res.json();
+        attendanceData = data.sort((a, b) => a.rollno - b.rollno);
+        displayData(attendanceData);
+      } catch (e) {
+        console.error(e);
+        displayData([]);
+      }
+    }
+
+    /* ── DISPLAY TABLE ── */
+    function displayData(data) {
+      const tbody = document.getElementById("attendanceTable");
+      document.getElementById("tableCount").innerText = data.length + " record" + (data.length !== 1 ? "s" : "");
+
+      if (data.length === 0) {
+        tbody.innerHTML = `
+          <tr><td colspan="7" style="padding:0; border:none;">
+            <div class="empty-state">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#5dcaa5" stroke-width="1.5">
+                <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+                <rect x="9" y="3" width="6" height="4" rx="1"/>
+                <path d="M9 12h6M9 16h4"/>
+              </svg>
+              <p>No records found</p>
+            </div>
+          </td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = data.map(item => {
+        const st = (item.status || "").toLowerCase();
+        const badgeClass =
+          st === "present" ? "badge-present" :
+          st === "absent"  ? "badge-absent"  :
+          st === "late"    ? "badge-late"    : "badge-leave";
+
+        return `
+          <tr>
+            <td>${item.rollno}</td>
+            <td>${item.name}</td>
+            <td>${item.contact}</td>
+            <td>${item.subject}</td>
+            <td>${item.date}</td>
+            <td>${item.time}</td>
+            <td><span class="badge ${badgeClass}">${item.status}</span></td>
+          </tr>`;
+      }).join("");
+    }
+
+    /* ── FILTER ── */
+    function filterData() {
+      const nameRoll = document.getElementById("searchNameRoll").value.toLowerCase();
+      const subject  = document.getElementById("searchSubject").value.toLowerCase();
+      const date     = document.getElementById("searchDate").value;
+      const time     = document.getElementById("searchTime").value;
+
+      const filtered = attendanceData.filter(item => (
+        (item.name.toLowerCase().includes(nameRoll) || item.rollno.toString().includes(nameRoll)) &&
+        (subject === "" || item.subject.toLowerCase() === subject) &&
+        (date    === "" || item.date === date) &&
+        (time    === "" || item.time.startsWith(time))
+      ));
+
+      displayData(filtered);
+    }
+
+    /* ── EVENTS ── */
+    document.getElementById("searchNameRoll").addEventListener("input",  filterData);
+    document.getElementById("searchSubject").addEventListener("change",  filterData);
+    document.getElementById("searchDate").addEventListener("change",     filterData);
+    document.getElementById("searchTime").addEventListener("change",     filterData);
+
+    /* ── INIT ── */
+    loadSubjects();
+    loadAttendance();
+</script>
+
+</body>
+</html>

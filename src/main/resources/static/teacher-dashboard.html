@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+    <style>
+
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          font-family: 'DM Sans', 'Segoe UI', sans-serif;
+        }
+
+        body {
+          min-height: 100vh;
+          background: #e8f5ee;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 40px 20px;
+        }
+
+        .container {
+          width: 850px;
+          border-radius: 18px;
+          overflow: hidden;
+          box-shadow:
+            0 0 0 1px rgba(15,110,86,0.12),
+            0 12px 40px rgba(15,110,86,0.1),
+            0 2px 8px rgba(0,0,0,0.06);
+          background: #ffffff;
+          animation: fadeUp 0.5s ease both;
+        }
+
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to   { opacity: 1; transform: none; }
+        }
+
+        .header {
+          background: linear-gradient(135deg, #074a30 0%, #0f6e56 60%, #1d9e75 100%);
+          padding: 30px 25px;
+          text-align: center;
+          color: white;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .header::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0;
+          height: 3px;
+          background: linear-gradient(90deg, transparent, #9fe1cb, #5dcaa5, transparent);
+        }
+
+        .header::after {
+          content: '';
+          position: absolute;
+          top: -60px; right: -60px;
+          width: 220px; height: 220px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(157,225,203,0.12), transparent 70%);
+          pointer-events: none;
+        }
+
+        .header-inner {
+          display: inline-flex;
+          align-items: center;
+          gap: 14px;
+          margin-bottom: 6px;
+          position: relative;
+          z-index: 1;
+        }
+
+        .logo-mark {
+          width: 44px; height: 44px;
+          border: 1.5px solid rgba(157,225,203,0.6);
+          border-radius: 10px;
+          display: flex; align-items: center; justify-content: center;
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 22px;
+          color: #9fe1cb;
+          background: rgba(255,255,255,0.08);
+        }
+
+        .header h1 {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 32px;
+          font-weight: 600;
+          margin-bottom: 0;
+          color: #e8faf4;
+          letter-spacing: 4px;
+        }
+
+        .header p {
+          font-size: 10px;
+          color: rgba(157,225,203,0.6);
+          letter-spacing: 4px;
+          text-transform: uppercase;
+          position: relative;
+          z-index: 1;
+        }
+
+        .content {
+          padding: 36px 32px 40px;
+          text-align: center;
+          background: #ffffff;
+        }
+
+        h2 {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 26px;
+          font-weight: 300;
+          color: #0a3d28;
+          margin-bottom: 4px;
+        }
+
+        .mint-sub {
+          font-size: 9px;
+          letter-spacing: 4px;
+          text-transform: uppercase;
+          color: #0f6e56;
+          margin-bottom: 28px;
+        }
+
+        .action-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 14px;
+          margin-bottom: 28px;
+        }
+
+        .action-card {
+          background: #f2fbf7;
+          border: 1px solid #c8ead8;
+          border-radius: 12px;
+          padding: 22px 16px 18px;
+          text-align: center;
+          cursor: pointer;
+          transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+          animation: fadeUp 0.5s ease both;
+          text-decoration: none;
+        }
+        .action-card:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 24px rgba(15,110,86,0.12);
+          border-color: #9fe1cb;
+        }
+
+        .action-card:nth-child(1){ animation-delay: 0.15s; }
+        .action-card:nth-child(2){ animation-delay: 0.22s; }
+        .action-card:nth-child(3){ animation-delay: 0.29s; }
+
+        .action-icon {
+          width: 44px; height: 44px;
+          border-radius: 10px;
+          background: linear-gradient(135deg, #0f6e56, #1d9e75);
+          display: flex; align-items: center; justify-content: center;
+          margin: 0 auto 10px;
+        }
+
+        .action-icon svg { color: #e8faf4; }
+
+        .action-title {
+          font-size: 13px;
+          font-weight: 500;
+          color: #0a3d28;
+          margin-bottom: 3px;
+        }
+
+        .action-desc {
+          font-size: 10px;
+          color: #7ab89a;
+          letter-spacing: 0.5px;
+        }
+
+        .mint-line {
+          height: 1px;
+          background: linear-gradient(90deg, transparent, #9fe1cb, transparent);
+          margin: 0 0 28px;
+          opacity: 0.8;
+        }
+
+        button {
+          font-family: 'DM Sans', sans-serif;
+          font-size: 11px;
+          font-weight: 500;
+          letter-spacing: 1.5px;
+          text-transform: uppercase;
+          padding: 13px 22px;
+          border: none;
+          border-radius: 8px;
+          background: linear-gradient(135deg, #074a30, #0f6e56);
+          color: #e8faf4;
+          cursor: pointer;
+          margin: 8px 6px;
+          transition: 0.3s;
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+        }
+
+        button:hover {
+          transform: scale(1.05);
+          box-shadow: 0 8px 28px rgba(15,110,86,0.3);
+        }
+
+        .logout {
+          background: transparent;
+          border: 1px solid #c8ead8;
+          color: #7ab89a;
+        }
+
+        .logout:hover {
+          background: #f0faf6;
+          border-color: #9fe1cb;
+          color: #0f6e56;
+          box-shadow: none;
+        }
+
+        .table-wrap {
+          background: #f7fdf9;
+          border: 1px solid #c8ead8;
+          border-radius: 12px;
+          overflow: hidden;
+          margin-top: 24px;
+        }
+
+        .table-top {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 12px 18px;
+          border-bottom: 1px solid #c8ead8;
+          background: #edf9f3;
+        }
+
+        .table-top strong {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 15px;
+          font-weight: 400;
+          color: #0a3d28;
+        }
+
+        .table-top span {
+          font-size: 10px;
+          color: #7ab89a;
+          letter-spacing: 1px;
+        }
+
+        table {
+          width: 100%;
+          margin-top: 0;
+          border-collapse: collapse;
+        }
+
+        th, td {
+          border: none;
+          border-bottom: 1px solid #e4f5ec;
+          padding: 11px 18px;
+          text-align: left;
+        }
+
+        th {
+          background: #edf9f3;
+          color: #0f6e56;
+          font-size: 9px;
+          font-weight: 500;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          border-bottom: 1px solid #9fe1cb;
+        }
+
+        td {
+          font-size: 13px;
+          color: #3a6a50;
+        }
+
+        tbody tr:hover td { background: #f2fbf7; }
+        tbody tr:last-child td { border-bottom: none; }
+
+        td.status-present { color: #0f6e56; font-weight: 500; }
+        td.status-absent  { color: #a32d2d; font-weight: 500; }
+        td.status-leave   { color: #1d9e75; font-weight: 500; }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div class="header-inner">
+            <div class="logo-mark">A</div>
+            <h1>AMS</h1>
+        </div>
+        <p>Attendance Management System</p>
+    </div>
+
+    <div class="content">
+
+        <h2>Teacher Dashboard</h2>
+        <div class="mint-sub">Teacher Portal</div>
+
+        <!-- QUICK ACTION CARDS -->
+        <div class="action-grid">
+
+            <div class="action-card" onclick="location.href='mark-attendance.html'">
+                <div class="action-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                    </svg>
+                </div>
+                <div class="action-title">Mark Attendance</div>
+                <div class="action-desc">Record today's session</div>
+            </div>
+
+            <div class="action-card" onclick="location.href='view-attendanceAdmin.html'">
+                <div class="action-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+                        <rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/>
+                    </svg>
+                </div>
+                <div class="action-title">View Attendance</div>
+                <div class="action-desc">Browse all records</div>
+            </div>
+
+            <div class="action-card" onclick="location.href='edit-attendance.html'">
+                <div class="action-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                        <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                </div>
+                <div class="action-title">Edit Attendance</div>
+                <div class="action-desc">Correct existing entries</div>
+            </div>
+
+        </div>
+
+        <div class="mint-line"></div>
+
+
+
+
+
+
+        <div class="table-wrap" id="tableWrap" style="display:none">
+            <div class="table-top">
+                <strong>Attendance Records</strong>
+                <span id="tableCount">0 records</span>
+            </div>
+            <table id="table" style="display:none">
+                <tr>
+                    <th>Student ID</th>
+                    <th>Subject</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                </tr>
+            </table>
+        </div>
+
+        <button class="logout" onclick="logout()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
+            </svg>
+            Logout
+        </button>
+
+    </div>
+</div>
+
+<script>
+
+    if(localStorage.getItem("role") !== "teacher"){
+      alert("Access Denied");
+      window.location.href = "login.html";
+    }
+
+    function loadAttendance(){
+
+      fetch("http://localhost:8080/getAttendance")
+      .then(res => res.json())
+      .then(data => {
+
+        let table = document.getElementById("table")
+        table.style.display = "table"
+
+        document.getElementById("tableWrap").style.display = "block"
+        document.getElementById("tableCount").innerText = data.length + " records"
+
+        table.innerHTML = `
+          <tr>
+            <th>Student ID</th>
+            <th>Subject</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+          </tr>
+        `
+
+        data.forEach(a => {
+          let row = table.insertRow()
+          row.insertCell(0).innerText = a.studentId
+          row.insertCell(1).innerText = a.subject
+          row.insertCell(2).innerText = a.date
+          row.insertCell(3).innerText = a.time
+
+          let statusCell = row.insertCell(4)
+          statusCell.innerText = a.status
+          if(a.status === "Present")     statusCell.className = "status-present"
+          else if(a.status === "Absent") statusCell.className = "status-absent"
+          else                           statusCell.className = "status-leave"
+        })
+
+      })
+      .catch(() => {
+        alert("Error loading attendance")
+      })
+    }
+
+    function logout(){
+      localStorage.clear()
+      window.location.href = "login.html"
+    }
+
+</script>
+
+</body>
+</html>

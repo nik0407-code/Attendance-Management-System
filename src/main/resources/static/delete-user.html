@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete User — AMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root{
+          --mint:#e8f5ef; --forest:#1b4332; --forest2:#2d6a4f;
+          --teal:#2a9d7f; --teal-l:#52b788; --teal-pale:#d8f3dc;
+          --white:#fff; --text:#1b3a2d; --muted:#6b8f77; --border:#c8e6d0;
+          --red:#c0392b; --red-pale:#fdecea; --red-dark:#a93226;
+          --shadow:0 8px 40px rgba(27,67,50,0.13); --r:16px;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'DM Sans',sans-serif;min-height:100vh;background:var(--mint);display:flex;justify-content:center;align-items:flex-start;padding:24px;}
+        .card{background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;width:100%;max-width:860px;margin:auto;}
+        .hdr{background:linear-gradient(135deg,var(--forest) 60%,var(--forest2));padding:20px 28px;display:flex;align-items:center;gap:14px;}
+        .hdr-logo-box{width:40px;height:40px;border:1.5px solid rgba(255,255,255,0.35);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:20px;color:#fff;font-weight:600;}
+        .hdr-text{flex:1;}
+        .hdr-title{font-size:17px;font-weight:600;color:#fff;letter-spacing:2px;}
+        .hdr-sub{font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:2px;margin-top:2px;text-transform:uppercase;}
+        .back-btn{background:transparent;border:1.5px solid rgba(255,255,255,0.5);color:#fff;padding:7px 16px;border-radius:7px;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background .2s;font-family:'DM Sans',sans-serif;}
+        .back-btn:hover{background:rgba(255,255,255,0.15);}
+        .body{padding:32px 28px 28px;}
+        .page-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:400;color:var(--text);text-align:center;margin-bottom:4px;}
+        .page-sub{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:24px;}
+
+        /* Search Row */
+        .search-row{display:grid;grid-template-columns:1fr auto auto;gap:10px;margin-bottom:6px;}
+        input,select{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s;font-family:'DM Sans',sans-serif;background:var(--white);}
+        input:focus,select:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(42,157,127,0.12);}
+        select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b8f77' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+        .btn{padding:11px 22px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--forest),var(--forest2));color:#fff;font-size:14px;font-weight:600;cursor:pointer;transition:opacity .2s;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+        .btn:hover{opacity:.88;}
+
+        /* Bulk Action Bar */
+        .bulk-bar{display:flex;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap;}
+        .bulk-btn{padding:8px 18px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;letter-spacing:.3px;border:1.5px solid transparent;white-space:nowrap;}
+        .btn-select-all{background:var(--teal-pale);color:var(--forest);border-color:var(--teal-l);}
+        .btn-select-all:hover{background:var(--teal-l);color:#fff;}
+        .btn-deselect-all{background:#f0f0f0;color:#555;border-color:#ccc;}
+        .btn-deselect-all:hover{background:#ddd;color:#333;}
+        .btn-delete-selected{background:var(--red-pale);color:var(--red);border-color:rgba(192,57,43,0.35);}
+        .btn-delete-selected:hover:not(:disabled){background:var(--red);color:#fff;}
+        .btn-delete-selected:disabled{opacity:.45;cursor:not-allowed;}
+        .selected-count{margin-left:auto;font-size:12px;color:var(--muted);font-weight:500;background:var(--mint);padding:6px 14px;border-radius:20px;border:1px solid var(--border);}
+        .selected-count span{color:var(--forest);font-weight:700;}
+
+        /* Table */
+        .tbl-wrap{border-radius:10px;overflow:hidden;border:1.5px solid var(--border);margin-top:14px;}
+        table{width:100%;border-collapse:collapse;}
+        thead tr{background:var(--forest);}
+        th{padding:11px 14px;font-size:12px;font-weight:600;color:#fff;letter-spacing:.5px;text-transform:uppercase;text-align:left;}
+        th.chk-col{width:40px;text-align:center;}
+        td{padding:11px 14px;font-size:13px;color:var(--text);border-top:1px solid var(--border);vertical-align:middle;}
+        td.chk-col{text-align:center;}
+        tr:hover td{background:var(--mint);}
+        tr.row-selected td{background:#fff8e1;}
+        tr.row-selected:hover td{background:#fff3cd;}
+
+        /* Custom Checkbox */
+        .custom-cb{width:17px;height:17px;accent-color:var(--forest);cursor:pointer;border-radius:4px;}
+
+        .role-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.3px;}
+        .role-teacher{background:#fff3cd;color:#856404;}
+        .role-student{background:var(--teal-pale);color:var(--forest);}
+        .del-btn{background:var(--red-pale);color:var(--red);border:1px solid rgba(192,57,43,0.2);padding:5px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:background .2s;font-family:'DM Sans',sans-serif;}
+        .del-btn:hover{background:var(--red);color:#fff;}
+        .empty{text-align:center;color:var(--muted);padding:20px;font-size:13px;}
+
+        /* Toast */
+        .toast{position:fixed;bottom:28px;right:28px;background:var(--forest);color:#fff;padding:12px 22px;border-radius:10px;font-size:13px;font-weight:500;box-shadow:0 6px 24px rgba(27,67,50,0.25);opacity:0;transform:translateY(12px);transition:all .3s;pointer-events:none;z-index:999;}
+        .toast.show{opacity:1;transform:translateY(0);}
+        .toast.error{background:var(--red);}
+
+        /* Header checkbox styling */
+        #selectAllHeader{width:17px;height:17px;accent-color:#fff;cursor:pointer;}
+
+        @media(max-width:600px){
+          .search-row{grid-template-columns:1fr;}
+          .bulk-bar{gap:8px;}
+          .selected-count{margin-left:0;width:100%;}
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="hdr">
+        <div class="hdr-logo-box">A</div>
+        <div class="hdr-text">
+            <div class="hdr-title">AMS</div>
+            <div class="hdr-sub">Attendance Management</div>
+        </div>
+        <button class="back-btn" onclick="location.href='admin-dashboard.html'">← Back</button>
+    </div>
+    <div class="body">
+        <div class="page-title">Delete User</div>
+        <div class="page-sub">User Management</div>
+
+        <div class="search-row">
+            <input type="text" id="nameSearch" placeholder="Search by name…" onkeydown="if(event.key==='Enter')loadUsers()">
+            <select id="roleSearch" style="width:auto;">
+                <option value="">All Roles</option>
+                <option value="Teacher">Teacher</option>
+                <option value="Student">Student</option>
+            </select>
+            <button class="btn" onclick="loadUsers()">Search</button>
+        </div>
+
+        <!-- Bulk Action Bar -->
+        <div class="bulk-bar">
+            <button class="bulk-btn btn-select-all" onclick="selectAll()">☑ Select All</button>
+            <button class="bulk-btn btn-deselect-all" onclick="deselectAll()">☐ Deselect All</button>
+            <button class="bulk-btn btn-delete-selected" id="deleteSelectedBtn" onclick="deleteSelected()" disabled>🗑 Delete Selected</button>
+            <div class="selected-count"><span id="selCount">0</span> selected</div>
+        </div>
+
+        <div class="tbl-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th class="chk-col"><input type="checkbox" id="selectAllHeader" title="Toggle All" onchange="toggleHeaderCheckbox(this)"></th>
+                    <th>#</th><th>Name</th><th>Email</th><th>Role</th><th>Action</th>
+                </tr>
+                </thead>
+                <tbody id="tbody"><tr><td colspan="6" class="empty">Loading users…</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast"></div>
+
+<script>
+    let currentUsers = [];
+
+    function showToast(msg, isError=false){
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'toast show' + (isError?' error':'');
+        setTimeout(()=>{ t.className='toast'; }, 3000);
+    }
+
+    function updateSelectionUI(){
+        const checkboxes = document.querySelectorAll('.row-cb');
+        const checked = document.querySelectorAll('.row-cb:checked');
+        const count = checked.length;
+        document.getElementById('selCount').textContent = count;
+        document.getElementById('deleteSelectedBtn').disabled = count === 0;
+
+        // Update header checkbox state
+        const headerCb = document.getElementById('selectAllHeader');
+        if(count === 0) { headerCb.indeterminate=false; headerCb.checked=false; }
+        else if(count === checkboxes.length) { headerCb.indeterminate=false; headerCb.checked=true; }
+        else { headerCb.indeterminate=true; }
+
+        // Highlight selected rows
+        document.querySelectorAll('#tbody tr').forEach(tr=>{
+            const cb = tr.querySelector('.row-cb');
+            if(cb) tr.classList.toggle('row-selected', cb.checked);
+        });
+    }
+
+    function selectAll(){
+        document.querySelectorAll('.row-cb').forEach(cb=>cb.checked=true);
+        updateSelectionUI();
+    }
+
+    function deselectAll(){
+        document.querySelectorAll('.row-cb').forEach(cb=>cb.checked=false);
+        updateSelectionUI();
+    }
+
+    function toggleHeaderCheckbox(cb){
+        document.querySelectorAll('.row-cb').forEach(r=>r.checked=cb.checked);
+        updateSelectionUI();
+    }
+
+    function getSelectedIds(){
+        return Array.from(document.querySelectorAll('.row-cb:checked')).map(cb=>cb.value);
+    }
+
+    function loadUsers(){
+        let name = document.getElementById("nameSearch").value;
+        let role = document.getElementById("roleSearch").value;
+        fetch("http://localhost:8080/getUsers")
+            .then(r=>r.json())
+            .then(data=>{
+                currentUsers = data.filter(u=>{
+                    if(u.role.toLowerCase()==="admin") return false;
+                    if(name && !u.name.toLowerCase().includes(name.toLowerCase())) return false;
+                    if(role && u.role.toLowerCase()!==role.toLowerCase()) return false;
+                    return true;
+                });
+                renderTable();
+            })
+            .catch(()=>{ showToast('Failed to load users.', true); });
+    }
+
+    function renderTable(){
+        const tb = document.getElementById("tbody");
+        const headerCb = document.getElementById('selectAllHeader');
+        headerCb.checked=false; headerCb.indeterminate=false;
+        document.getElementById('selCount').textContent='0';
+        document.getElementById('deleteSelectedBtn').disabled=true;
+
+        if(!currentUsers.length){
+            tb.innerHTML='<tr><td colspan="6" class="empty">No users found.</td></tr>';
+            return;
+        }
+        tb.innerHTML = currentUsers.map(u=>`
+            <tr id="row-${u.id}">
+                <td class="chk-col"><input type="checkbox" class="custom-cb row-cb" value="${u.id}" onchange="updateSelectionUI()"></td>
+                <td>${u.id}</td>
+                <td>${u.name}</td>
+                <td>${u.email}</td>
+                <td><span class="role-badge ${u.role.toLowerCase()==='teacher'?'role-teacher':'role-student'}">${u.role}</span></td>
+                <td><button class="del-btn" onclick="deleteUser(${u.id},'${u.name}')">Delete</button></td>
+            </tr>`).join('');
+    }
+
+    function deleteUser(id, name){
+        if(!confirm(`Are you sure you want to delete "${name}"?`)) return;
+        fetch("http://localhost:8080/deleteUser/"+id, {method:"DELETE"})
+            .then(r=>r.text())
+            .then(d=>{
+                showToast(`"${name}" deleted successfully.`);
+                currentUsers = currentUsers.filter(u=>u.id!==id);
+                renderTable();
+            })
+            .catch(()=>showToast('Delete failed.', true));
+    }
+
+    function deleteSelected(){
+        const ids = getSelectedIds();
+        if(!ids.length) return;
+        const names = currentUsers.filter(u=>ids.includes(String(u.id))).map(u=>u.name);
+        if(!confirm(`Delete ${ids.length} selected user(s)?\n\n${names.join(', ')}`)) return;
+
+        document.getElementById('deleteSelectedBtn').disabled = true;
+        document.getElementById('deleteSelectedBtn').textContent = 'Deleting…';
+
+        Promise.all(ids.map(id=>
+            fetch("http://localhost:8080/deleteUser/"+id, {method:"DELETE"}).then(r=>r.text())
+        )).then(()=>{
+            showToast(`${ids.length} user(s) deleted successfully.`);
+            currentUsers = currentUsers.filter(u=>!ids.includes(String(u.id)));
+            renderTable();
+        }).catch(()=>{
+            showToast('Some deletions failed. Please refresh.', true);
+            loadUsers();
+        }).finally(()=>{
+            const btn = document.getElementById('deleteSelectedBtn');
+            btn.textContent='🗑 Delete Selected';
+        });
+    }
+
+    loadUsers();
+</script>
+</body>
+</html>

@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Attendance — AMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root{
+          --mint:#e8f5ef; --forest:#074a30; --forest2:#0f6e56; --forest3:#1d9e75;
+          --teal:#2a9d7f; --teal-l:#52b788; --teal-pale:#d8f3dc; --teal-mid:#9fe1cb;
+          --white:#fff; --text:#0a3d28; --muted:#7ab89a; --border:#c8ead8;
+          --red:#a32d2d; --red-pale:#fdecea; --red2:#c0392b;
+          --shadow:0 0 0 1px rgba(15,110,86,0.12),0 12px 40px rgba(15,110,86,0.10),0 2px 8px rgba(0,0,0,0.06);
+          --r:18px;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'DM Sans',sans-serif;min-height:100vh;background:var(--mint);display:flex;justify-content:center;align-items:flex-start;padding:32px 20px;}
+
+        .card{width:100%;max-width:1060px;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);background:var(--white);animation:fadeUp .45s ease both;}
+        @keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:none;}}
+
+        .hdr{background:linear-gradient(135deg,var(--forest) 0%,var(--forest2) 60%,var(--forest3) 100%);padding:22px 28px;display:flex;align-items:center;gap:16px;position:relative;overflow:hidden;}
+        .hdr::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--teal-mid),#5dcaa5,transparent);}
+        .hdr::after{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(157,225,203,0.12),transparent 70%);pointer-events:none;}
+
+        .logo-mark{width:42px;height:42px;border:1.5px solid rgba(157,225,203,0.55);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:21px;color:var(--teal-mid);background:rgba(255,255,255,0.08);flex-shrink:0;position:relative;z-index:1;}
+        .hdr-info{flex:1;position:relative;z-index:1;}
+        .hdr-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:#e8faf4;letter-spacing:4px;}
+        .hdr-sub{font-size:10px;color:rgba(157,225,203,0.6);letter-spacing:3px;text-transform:uppercase;margin-top:2px;}
+        .back-btn{background:transparent;border:1.5px solid rgba(255,255,255,0.45);color:#e8faf4;padding:8px 18px;border-radius:8px;font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background .2s;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:6px;position:relative;z-index:1;flex-shrink:0;}
+        .back-btn:hover{background:rgba(255,255,255,0.14);}
+
+        .body{padding:32px 28px 36px;}
+        .page-title{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:400;color:var(--text);text-align:center;margin-bottom:4px;}
+        .page-sub{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:28px;}
+
+        .filter-panel{background:#f4fdf8;border:1.5px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px;}
+        .filter-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px;}
+        .filter-label{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;display:block;}
+        input,select{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;color:var(--text);background:var(--white);outline:none;transition:border-color .2s,box-shadow .2s;font-family:'DM Sans',sans-serif;}
+        input:focus,select:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(42,157,127,0.12);}
+        select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237ab89a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+
+        .filter-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;align-items:center;}
+
+        .export-btn{display:flex;align-items:center;gap:8px;padding:10px 20px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--forest),var(--forest2));color:#e8faf4;font-size:13px;font-weight:600;cursor:pointer;letter-spacing:.3px;transition:opacity .2s,transform .1s;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+        .export-btn:hover{opacity:.88;transform:translateY(-1px);}
+        .export-btn:active{transform:translateY(0);}
+        .export-btn svg{flex-shrink:0;}
+        .export-btn.pdf{background:linear-gradient(135deg,#1a3d8a,#2552c7);}
+
+        .del-btn{display:flex;align-items:center;gap:7px;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;letter-spacing:.3px;transition:opacity .2s,transform .1s,background .2s,border-color .2s;font-family:'DM Sans',sans-serif;white-space:nowrap;background:var(--red-pale);color:var(--red);border:1.5px solid #f5c6c6;}
+        .del-btn:hover:not(:disabled){background:#fbd4d4;border-color:#e9a0a0;transform:translateY(-1px);}
+        .del-btn:active:not(:disabled){transform:translateY(0);}
+        .del-btn:disabled{opacity:.4;cursor:not-allowed;}
+        .del-btn svg{flex-shrink:0;}
+
+        .selection-bar{display:none;align-items:center;gap:14px;background:#fff8f8;border:1.5px solid #f5c6c6;border-radius:10px;padding:11px 16px;margin-bottom:14px;}
+        .selection-bar.visible{display:flex;}
+        .sel-count{font-size:13px;font-weight:600;color:var(--red);}
+        .sel-hint{font-size:12px;color:#c07070;flex:1;}
+        .clear-sel-btn{font-size:12px;color:var(--muted);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;text-decoration:underline;}
+        .clear-sel-btn:hover{color:var(--red);}
+
+        .tbl-wrap{border-radius:12px;overflow:hidden;border:1.5px solid var(--border);}
+        .tbl-header{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;background:#edf9f3;border-bottom:1.5px solid var(--border);}
+        .tbl-header-title{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:400;color:var(--text);}
+        .tbl-count{font-size:11px;color:var(--muted);letter-spacing:.5px;}
+
+        table{width:100%;border-collapse:collapse;}
+        thead tr{background:var(--forest);}
+        th{padding:11px 14px;font-size:11px;font-weight:600;color:#e8faf4;letter-spacing:.8px;text-transform:uppercase;text-align:left;}
+        th.cb-col{width:38px;text-align:center;}
+        td{padding:11px 14px;font-size:13px;color:#3a6a50;border-top:1px solid #e4f5ec;}
+        td.cb-col{text-align:center;}
+        tbody tr:hover td{background:#f2fbf7;}
+        tbody tr.selected-row td{background:#fff0f0 !important;}
+        tbody tr:last-child td{border-bottom:none;}
+
+        input[type="checkbox"]{width:16px;height:16px;accent-color:var(--red);cursor:pointer;border-radius:4px;}
+
+        .badge{display:inline-block;padding:3px 11px;border-radius:20px;font-size:11px;font-weight:600;}
+        .badge-present{background:var(--teal-pale);color:var(--forest2);}
+        .badge-absent{background:var(--red-pale);color:var(--red);}
+        .badge-leave{background:#fff8e1;color:#856404;}
+
+        .empty-row td{text-align:center;color:var(--muted);padding:32px;font-size:13px;}
+        .loading-row td{text-align:center;padding:32px;}
+        .spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 8px;}
+        @keyframes spin{to{transform:rotate(360deg);}}
+
+        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,30,20,0.45);z-index:1000;align-items:center;justify-content:center;}
+        .modal-overlay.open{display:flex;}
+        .modal{background:var(--white);border-radius:16px;padding:28px 28px 24px;max-width:400px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,0.18);animation:fadeUp .25s ease both;}
+        .modal-icon{width:44px;height:44px;background:var(--red-pale);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+        .modal-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--text);text-align:center;margin-bottom:8px;}
+        .modal-msg{font-size:13px;color:#6a8a78;text-align:center;line-height:1.6;margin-bottom:22px;}
+        .modal-msg strong{color:var(--red);font-weight:600;}
+        .modal-actions{display:flex;gap:10px;justify-content:center;}
+        .modal-cancel{padding:10px 24px;border:1.5px solid var(--border);border-radius:8px;background:none;color:var(--text);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
+        .modal-cancel:hover{background:#f4fdf8;}
+        .modal-confirm{padding:10px 24px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--red),var(--red2));color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
+        .modal-confirm:hover{opacity:.88;}
+
+        @media(max-width:700px){.filter-grid{grid-template-columns:1fr 1fr;}.card{border-radius:12px;}}
+        @media(max-width:460px){.filter-grid{grid-template-columns:1fr;}.filter-actions{flex-direction:column;}.export-btn,.del-btn{width:100%;justify-content:center;}}
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="hdr">
+        <div class="logo-mark">A</div>
+        <div class="hdr-info">
+            <div class="hdr-title">AMS</div>
+            <div class="hdr-sub">Attendance Management System</div>
+        </div>
+        <button class="back-btn" onclick="goBack()">← Back</button>
+    </div>
+
+    <div class="body">
+        <div class="page-title">View Attendance</div>
+        <div class="page-sub">Attendance Records</div>
+
+        <div class="filter-panel">
+            <div class="filter-grid">
+                <div>
+                    <label class="filter-label">Name / Roll No</label>
+                    <input type="text" id="searchNameRoll" placeholder="Search…">
+                </div>
+                <div>
+                    <label class="filter-label">Subject</label>
+                    <select id="searchSubject">
+                        <option value="">All Subjects</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="filter-label">Date</label>
+                    <input type="date" id="searchDate">
+                </div>
+                <div>
+                    <label class="filter-label">Time</label>
+                    <input type="time" id="searchTime">
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button class="del-btn" id="deleteSelectedBtn" onclick="confirmDelete()" disabled>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6M10 11v6M14 11v6M9 6V4h6v2"/>
+                    </svg>
+                    Delete Selected (<span id="selectedCountBadge">0</span>)
+                </button>
+                <button class="export-btn" onclick="downloadExcelFromServer()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Export Excel
+                </button>
+                <button class="export-btn pdf" onclick="downloadPdfFromServer()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <polyline points="10 9 9 9 8 9"/>
+                    </svg>
+                    Download PDF
+                </button>
+            </div>
+        </div>
+
+        <div class="selection-bar" id="selectionBar">
+            <span class="sel-count" id="selCountText">0 selected</span>
+            <span class="sel-hint">Check rows below to select records for deletion.</span>
+            <button class="clear-sel-btn" onclick="clearAllSelections()">Clear selection</button>
+        </div>
+
+        <div class="tbl-wrap">
+            <div class="tbl-header">
+                <span class="tbl-header-title">Attendance Records</span>
+                <span class="tbl-count" id="recordCount">Loading…</span>
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th class="cb-col">
+                        <input type="checkbox" id="selectAll" title="Select all visible" onchange="toggleSelectAll(this)">
+                    </th>
+                    <th>Roll No</th>
+                    <th>Name</th>
+                    <th>Contact</th>
+                    <th>Subject</th>
+                    <th>Teacher</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody id="attendanceTable">
+                <tr class="loading-row">
+                    <td colspan="9">
+                        <div class="spinner"></div>
+                        Loading attendance data…
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal">
+        <div class="modal-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a32d2d" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6M10 11v6M14 11v6M9 6V4h6v2"/>
+            </svg>
+        </div>
+        <div class="modal-title">Confirm Deletion</div>
+        <div class="modal-msg" id="modalMsg"></div>
+        <div class="modal-actions">
+            <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+            <button class="modal-confirm" onclick="executeDelete()">Yes, Delete</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API = "http://localhost:8080";
+    let attendanceData = [];
+    let filteredData   = [];
+    let selectedIds    = new Set();
+
+    // Map: subject name → teacher name  (populated from /getAssignedSubjects)
+    let subjectTeacherMap = {};
+
+    function goBack(){
+        const role = localStorage.getItem("role");
+        if(role === "teacher")      window.location.href = "teacher-dashboard.html";
+        else if(role === "student") window.location.href = "student-dashboard.html";
+        else                        window.location.href = "admin-dashboard.html";
+    }
+
+    // ── Fetch assigned subjects and build subject→teacher map ──────────────────
+    async function loadAssignSubjects(){
+        try {
+            const res = await fetch(`${API}/getAssignedSubjects`);
+            if(!res.ok) throw new Error("Status " + res.status);
+            const data = await res.json();
+
+            // Expected response shape (adjust field names to match your API):
+            //   [ { subject: "Math", teacherName: "Mr. Smith" }, … ]
+            // Common alternative field names are handled below.
+            subjectTeacherMap = {};
+            data.forEach(item => {
+                const subjectKey = item.subject || item.subjectName || item.subjectname || "";
+                const teacher    = item.teacherName
+                                || item.teacher_name
+                                || item.teachername
+                                || item.teacher
+                                || item.name
+                                || "—";
+                if(subjectKey) subjectTeacherMap[subjectKey] = teacher;
+            });
+        } catch(e){
+            console.error("Failed to load assigned subjects", e);
+        }
+    }
+
+    // ── Subjects dropdown ──────────────────────────────────────────────────────
+    async function loadSubjects(){
+        try {
+            const res = await fetch(`${API}/subjects`);
+            if(!res.ok) throw new Error();
+            const data = await res.json();
+            const dd = document.getElementById("searchSubject");
+            dd.innerHTML = `<option value="">All Subjects</option>`;
+            data.forEach(sub => {
+                dd.innerHTML += `<option value="${sub.subject}">${sub.subject}</option>`;
+            });
+        } catch(e){ console.error("Failed to load subjects", e); }
+    }
+
+    // ── Attendance data ────────────────────────────────────────────────────────
+    async function loadAttendance(){
+        try {
+            const res = await fetch(`${API}/attendance`);
+            if(!res.ok) throw new Error("Server returned " + res.status);
+            const data = await res.json();
+            attendanceData = data.sort((a,b) => a.rollno - b.rollno).map((r,i) => ({
+                ...r,
+                _uid: String(r.id ?? r._id ?? `row-${i}`)
+            }));
+            filteredData = [...attendanceData];
+            displayData(filteredData);
+        } catch(e){
+            console.error("Failed to load attendance", e);
+            document.getElementById("attendanceTable").innerHTML =
+                `<tr class="empty-row"><td colspan="9">Could not load attendance data. Check server connection.</td></tr>`;
+            document.getElementById("recordCount").innerText = "Error";
+        }
+    }
+
+    // ── Display ────────────────────────────────────────────────────────────────
+    function displayData(data){
+        filteredData = data;
+        const tbody = document.getElementById("attendanceTable");
+        document.getElementById("recordCount").innerText =
+            data.length + " record" + (data.length !== 1 ? "s" : "");
+
+        if(!data.length){
+            tbody.innerHTML = `<tr class="empty-row"><td colspan="9">No records found.</td></tr>`;
+            syncSelectAllCheckbox();
+            return;
+        }
+
+        tbody.innerHTML = data.map(item => {
+            let badgeClass = "badge-present";
+            if(item.status === "Absent")     badgeClass = "badge-absent";
+            else if(item.status === "Leave") badgeClass = "badge-leave";
+            const isChecked  = selectedIds.has(String(item._uid));
+            const teacherName = subjectTeacherMap[item.subject] || "—";
+            return `
+                <tr class="${isChecked ? 'selected-row' : ''}" data-uid="${item._uid}">
+                    <td class="cb-col">
+                        <input type="checkbox" ${isChecked ? 'checked' : ''}
+                            onchange="toggleRow(this, '${item._uid}')">
+                    </td>
+                    <td>${item.rollno}</td>
+                    <td>${item.name}</td>
+                    <td>${item.contact ?? "—"}</td>
+                    <td>${item.subject}</td>
+                    <td>${teacherName}</td>
+                    <td>${item.date}</td>
+                    <td>${item.time}</td>
+                    <td><span class="badge ${badgeClass}">${item.status}</span></td>
+                </tr>`;
+        }).join("");
+
+        syncSelectAllCheckbox();
+    }
+
+    // ── Selection helpers ──────────────────────────────────────────────────────
+    function toggleRow(cb, uid){
+        const key = String(uid);
+        const row = cb.closest("tr");
+        if(cb.checked){ selectedIds.add(key);    row.classList.add("selected-row"); }
+        else           { selectedIds.delete(key); row.classList.remove("selected-row"); }
+        updateSelectionUI();
+        syncSelectAllCheckbox();
+    }
+
+    function toggleSelectAll(cb){
+        const checking = cb.checked;
+        filteredData.forEach(item => {
+            if(checking) selectedIds.add(String(item._uid));
+            else         selectedIds.delete(String(item._uid));
+        });
+        document.querySelectorAll("#attendanceTable tr[data-uid]").forEach(row => {
+            const rowCb = row.querySelector("input[type='checkbox']");
+            if(rowCb) rowCb.checked = checking;
+            row.classList.toggle("selected-row", checking);
+        });
+        updateSelectionUI();
+        syncSelectAllCheckbox();
+    }
+
+    function syncSelectAllCheckbox(){
+        const saCb = document.getElementById("selectAll");
+        if(!filteredData.length){ saCb.checked = false; saCb.indeterminate = false; return; }
+        const n = filteredData.filter(i => selectedIds.has(String(i._uid))).length;
+        if(n === 0)                       { saCb.checked = false; saCb.indeterminate = false; }
+        else if(n === filteredData.length){ saCb.checked = true;  saCb.indeterminate = false; }
+        else                              { saCb.checked = false; saCb.indeterminate = true;  }
+    }
+
+    function clearAllSelections(){
+        selectedIds.clear();
+        document.querySelectorAll("#attendanceTable tr[data-uid]").forEach(row => {
+            const rowCb = row.querySelector("input[type='checkbox']");
+            if(rowCb) rowCb.checked = false;
+            row.classList.remove("selected-row");
+        });
+        const saCb = document.getElementById("selectAll");
+        saCb.checked = false; saCb.indeterminate = false;
+        updateSelectionUI();
+    }
+
+    function updateSelectionUI(){
+        const count = selectedIds.size;
+        document.getElementById("selectedCountBadge").textContent = count;
+        document.getElementById("deleteSelectedBtn").disabled = (count === 0);
+        document.getElementById("selCountText").textContent = count + " selected";
+        document.getElementById("selectionBar").classList.toggle("visible", count > 0);
+    }
+
+    // ── Filtering ──────────────────────────────────────────────────────────────
+    function getFilteredData(){
+        const nameRoll = document.getElementById("searchNameRoll").value.toLowerCase();
+        const subject  = document.getElementById("searchSubject").value;
+        const date     = document.getElementById("searchDate").value;
+        const time     = document.getElementById("searchTime").value;
+        return attendanceData.filter(item => (
+            (item.name.toLowerCase().includes(nameRoll) || item.rollno.toString().includes(nameRoll)) &&
+            (subject === "" || item.subject === subject) &&
+            (date === "" || item.date === date) &&
+            (time === "" || item.time.startsWith(time))
+        ));
+    }
+
+    function filterData(){ displayData(getFilteredData()); }
+
+    // ── Delete ─────────────────────────────────────────────────────────────────
+    function confirmDelete(){
+        if(selectedIds.size === 0){ alert("No records selected."); return; }
+        document.getElementById("modalMsg").innerHTML =
+            `You are about to permanently delete <strong>${selectedIds.size} selected record${selectedIds.size !== 1 ? 's' : ''}</strong>. This action cannot be undone.`;
+        document.getElementById("deleteModal").classList.add("open");
+    }
+
+    function closeModal(){
+        document.getElementById("deleteModal").classList.remove("open");
+    }
+
+    document.getElementById("deleteModal").addEventListener("click", function(e){
+        if(e.target === this) closeModal();
+    });
+
+    async function executeDelete(){
+        closeModal();
+        const idsToDelete = [...selectedIds];
+        try {
+            const res = await fetch(`${API}/attendance/delete`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ids: idsToDelete })
+            });
+            if(!res.ok) throw new Error("Server returned " + res.status);
+
+            const deletedSet = new Set(idsToDelete.map(String));
+            attendanceData = attendanceData.filter(r => !deletedSet.has(String(r._uid)));
+            idsToDelete.forEach(id => selectedIds.delete(String(id)));
+
+            displayData(getFilteredData());
+            updateSelectionUI();
+        } catch(e){
+            console.error("Delete failed", e);
+            alert("Failed to delete records. Check server connection.\n\n" + e.message);
+        }
+    }
+
+    // ── Helpers: enrich data with teacher name before export ──────────────────
+    function enrichWithTeacher(data){
+        return data.map(item => ({
+            ...item,
+            teacherName: subjectTeacherMap[item.subject] || "—"
+        }));
+    }
+
+    // ── Export Excel ───────────────────────────────────────────────────────────
+    async function downloadExcelFromServer(){
+        const filtered = getFilteredData();
+        if(!filtered.length){ alert("No data to export."); return; }
+        const subject = document.getElementById("searchSubject").value;
+        const date    = document.getElementById("searchDate").value;
+        const time    = document.getElementById("searchTime").value;
+
+        // Determine teacher label for the selected subject filter (if any)
+        const teacherLabel = subject ? (subjectTeacherMap[subject] || "—") : "All";
+
+        try {
+            const res = await fetch(`${API}/export/excel`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    data: enrichWithTeacher(filtered),   // ← each row now has teacherName
+                    subject:     subject     || "All",
+                    date:        date        || "All",
+                    time:        time        || "All",
+                    teacherName: teacherLabel            // ← summary-level teacher for header row
+                })
+            });
+            if(!res.ok) throw new Error("Server error " + res.status);
+            const blob = await res.blob();
+            const url  = URL.createObjectURL(blob);
+            const a    = document.createElement("a");
+            a.href = url; a.download = "Attendance_Report.xlsx"; a.click();
+            URL.revokeObjectURL(url);
+        } catch(e){ alert("Failed to export Excel."); console.error(e); }
+    }
+
+    // ── Export PDF ─────────────────────────────────────────────────────────────
+    async function downloadPdfFromServer(){
+        const filtered = getFilteredData();
+        if(!filtered.length){ alert("No data to export."); return; }
+        const subject = document.getElementById("searchSubject").value;
+        const date    = document.getElementById("searchDate").value;
+        const time    = document.getElementById("searchTime").value;
+
+        const teacherLabel = subject ? (subjectTeacherMap[subject] || "—") : "All";
+
+        try {
+            const res = await fetch(`${API}/export/pdf`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    data: enrichWithTeacher(filtered),   // ← each row now has teacherName
+                    subject:     subject     || "All",
+                    date:        date        || "All",
+                    time:        time        || "All",
+                    teacherName: teacherLabel            // ← summary-level teacher for header row
+                })
+            });
+            if(!res.ok) throw new Error("Server error " + res.status);
+            const blob = await res.blob();
+            const url  = URL.createObjectURL(blob);
+            const a    = document.createElement("a");
+            a.href = url; a.download = "Attendance_Report.pdf"; a.click();
+            URL.revokeObjectURL(url);
+        } catch(e){ alert("Failed to download PDF."); console.error(e); }
+    }
+
+    // ── Event listeners ────────────────────────────────────────────────────────
+    document.getElementById("searchNameRoll").addEventListener("input", filterData);
+    document.getElementById("searchSubject").addEventListener("change", filterData);
+    document.getElementById("searchDate").addEventListener("change", filterData);
+    document.getElementById("searchTime").addEventListener("change", filterData);
+
+    // Load everything — assigned subjects first so the map is ready before attendance renders
+    (async () => {
+        await Promise.all([loadSubjects(), loadAssignSubjects()]);
+        await loadAttendance();
+    })();
+</script>
+</body>
+</html>

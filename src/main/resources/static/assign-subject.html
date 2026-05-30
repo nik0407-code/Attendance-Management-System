@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Subject — AMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root{
+          --mint:#e8f5ef; --forest:#1b4332; --forest2:#2d6a4f;
+          --teal:#2a9d7f; --teal-l:#52b788; --teal-pale:#d8f3dc;
+          --white:#fff; --text:#1b3a2d; --muted:#6b8f77; --border:#c8e6d0;
+          --red:#c0392b; --red-pale:#fdecea;
+          --shadow:0 8px 40px rgba(27,67,50,0.13); --r:16px;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'DM Sans',sans-serif;min-height:100vh;background:var(--mint);display:flex;justify-content:center;align-items:flex-start;padding:24px;}
+        .card{background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;width:100%;max-width:720px;margin:auto;}
+        .hdr{background:linear-gradient(135deg,var(--forest) 60%,var(--forest2));padding:20px 28px;display:flex;align-items:center;gap:14px;}
+        .hdr-logo-box{width:40px;height:40px;border:1.5px solid rgba(255,255,255,0.35);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:20px;color:#fff;font-weight:600;}
+        .hdr-text{flex:1;}
+        .hdr-title{font-size:17px;font-weight:600;color:#fff;letter-spacing:2px;}
+        .hdr-sub{font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:2px;margin-top:2px;text-transform:uppercase;}
+        .back-btn{background:transparent;border:1.5px solid rgba(255,255,255,0.5);color:#fff;padding:7px 16px;border-radius:7px;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background .2s;font-family:'DM Sans',sans-serif;}
+        .back-btn:hover{background:rgba(255,255,255,0.15);}
+        .body{padding:32px 28px 28px;}
+        .page-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:400;color:var(--text);text-align:center;margin-bottom:4px;}
+        .page-sub{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:24px;}
+        .assign-row{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:center;margin-bottom:6px;}
+        select{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s;font-family:'DM Sans',sans-serif;background:var(--white);appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b8f77' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+        select:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(42,157,127,0.12);}
+        .btn{padding:11px 22px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--forest),var(--forest2));color:#fff;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.3px;transition:opacity .2s;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+        .btn:hover{opacity:.88;}
+        .tbl-wrap{border-radius:10px;overflow:hidden;border:1.5px solid var(--border);margin-top:18px;}
+        table{width:100%;border-collapse:collapse;}
+        thead tr{background:var(--forest);}
+        th{padding:11px 14px;font-size:12px;font-weight:600;color:#fff;letter-spacing:.5px;text-transform:uppercase;text-align:left;}
+        td{padding:11px 14px;font-size:13px;color:var(--text);border-top:1px solid var(--border);}
+        tr:hover td{background:var(--mint);}
+        .del-btn{background:var(--red-pale);color:var(--red);border:1px solid rgba(192,57,43,0.2);padding:5px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:background .2s;font-family:'DM Sans',sans-serif;}
+        .del-btn:hover{background:var(--red);color:#fff;}
+        .empty{text-align:center;color:var(--muted);padding:20px;font-size:13px;}
+        @media(max-width:500px){.assign-row{grid-template-columns:1fr;}}
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="hdr">
+        <div class="hdr-logo-box">A</div>
+        <div class="hdr-text">
+            <div class="hdr-title">AMS</div>
+            <div class="hdr-sub">Attendance Management</div>
+        </div>
+        <button class="back-btn" onclick="location.href='admin-dashboard.html'">← Back</button>
+    </div>
+    <div class="body">
+        <div class="page-title">Assign Subject</div>
+        <div class="page-sub">Teacher — Subject Mapping</div>
+
+        <div class="assign-row">
+            <select id="teacherSelect"><option value="">Select Teacher</option></select>
+            <select id="subjectSelect"><option value="">Select Subject</option></select>
+            <button class="btn" onclick="assign()">Assign</button>
+        </div>
+
+        <div class="tbl-wrap">
+            <table>
+                <thead><tr><th>#</th><th>Teacher</th><th>Email</th><th>Subject</th><th>Action</th></tr></thead>
+                <tbody id="tbody"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    fetch("http://localhost:8080/getTeachers").then(r=>r.json()).then(data=>{
+      let t=document.getElementById("teacherSelect");
+      data.forEach(e=>{let o=document.createElement("option");o.value=e.email;o.text=e.email;t.appendChild(o);});
+    });
+    fetch("http://localhost:8080/getSubjects").then(r=>r.json()).then(data=>{
+      let s=document.getElementById("subjectSelect");
+      data.forEach(e=>{let o=document.createElement("option");o.value=e.name||e.subject||e.subjectName;o.text=e.name||e.subject||e.subjectName;s.appendChild(o);});
+    });
+    function assign(){
+      let email=document.getElementById("teacherSelect").value;
+      let subject=document.getElementById("subjectSelect").value;
+      if(!email){alert("Please select a teacher.");return;}
+      if(!subject||subject==="Select Subject"){alert("Please select a subject.");return;}
+      fetch("http://localhost:8080/assignSubject",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({teacherEmail:email,subjectName:subject})})
+      .then(r=>r.text()).then(d=>{alert(d);loadTable();});
+    }
+    function loadTable(){
+      fetch("http://localhost:8080/getAssignedSubjects").then(r=>r.json()).then(data=>{
+        let tb=document.getElementById("tbody");
+        if(!data.length){tb.innerHTML='<tr><td colspan="5" class="empty">No assignments yet.</td></tr>';return;}
+        tb.innerHTML=data.map(e=>`
+          <tr>
+            <td>${e.id}</td><td>${e.teacherName}</td><td>${e.teacherEmail}</td><td>${e.subjectName}</td>
+            <td><button class="del-btn" onclick="deleteRow(${e.id})">Remove</button></td>
+          </tr>`).join('');
+      });
+    }
+    function deleteRow(id){
+      fetch("http://localhost:8080/deleteAssign/"+id,{method:"DELETE"}).then(r=>r.text()).then(d=>{alert(d);loadTable();});
+    }
+    loadTable();
+</script>
+</body>
+</html>

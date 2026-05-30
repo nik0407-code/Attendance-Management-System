@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Subject — AMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root{
+          --mint:#e8f5ef; --forest:#1b4332; --forest2:#2d6a4f;
+          --teal:#2a9d7f; --teal-l:#52b788; --teal-pale:#d8f3dc;
+          --white:#fff; --text:#1b3a2d; --muted:#6b8f77; --border:#c8e6d0;
+          --red:#c0392b; --red-pale:#fdecea;
+          --shadow:0 8px 40px rgba(27,67,50,0.13); --r:16px;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'DM Sans',sans-serif;min-height:100vh;background:var(--mint);display:flex;justify-content:center;align-items:flex-start;padding:24px;}
+        .card{background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;width:100%;max-width:560px;margin:auto;}
+        .hdr{background:linear-gradient(135deg,var(--forest) 60%,var(--forest2));padding:20px 28px;display:flex;align-items:center;gap:14px;}
+        .hdr-logo-box{width:40px;height:40px;border:1.5px solid rgba(255,255,255,0.35);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:20px;color:#fff;font-weight:600;}
+        .hdr-text{flex:1;}
+        .hdr-title{font-size:17px;font-weight:600;color:#fff;letter-spacing:2px;}
+        .hdr-sub{font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:2px;margin-top:2px;text-transform:uppercase;}
+        .back-btn{background:transparent;border:1.5px solid rgba(255,255,255,0.5);color:#fff;padding:7px 16px;border-radius:7px;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background .2s;font-family:'DM Sans',sans-serif;}
+        .back-btn:hover{background:rgba(255,255,255,0.15);}
+        .body{padding:32px 28px 28px;}
+        .page-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:400;color:var(--text);text-align:center;margin-bottom:4px;}
+        .page-sub{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:24px;}
+        .add-row{display:flex;gap:10px;margin-bottom:6px;}
+        input{flex:1;padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s;font-family:'DM Sans',sans-serif;}
+        input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(42,157,127,0.12);}
+        .btn{padding:11px 22px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--forest),var(--forest2));color:#fff;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.3px;transition:opacity .2s;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+        .btn:hover{opacity:.88;}
+        .msg{font-size:13px;margin-bottom:12px;padding:8px 12px;border-radius:7px;}
+        .success{color:#1a6b3c;background:var(--teal-pale);}
+        .error{color:var(--red);background:var(--red-pale);}
+
+        /* TABLE */
+        .tbl-wrap{border-radius:10px;overflow:hidden;border:1.5px solid var(--border);margin-top:18px;}
+        table{width:100%;border-collapse:collapse;}
+        thead tr{background:var(--forest);}
+        th{padding:11px 14px;font-size:12px;font-weight:600;color:#fff;letter-spacing:.5px;text-transform:uppercase;text-align:left;}
+        th:last-child{text-align:center;}
+        td{padding:11px 14px;font-size:13px;color:var(--text);border-top:1px solid var(--border);text-align:left;}
+        td:last-child{text-align:center;}
+        tr:hover td{background:var(--mint);}
+        .del-btn{background:var(--red-pale);color:var(--red);border:1px solid rgba(192,57,43,0.2);padding:5px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:background .2s;font-family:'DM Sans',sans-serif;}
+        .del-btn:hover{background:var(--red);color:#fff;}
+        .empty{text-align:center;color:var(--muted);padding:20px;font-size:13px;}
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="hdr">
+        <div class="hdr-logo-box">A</div>
+        <div class="hdr-text">
+            <div class="hdr-title">AMS</div>
+            <div class="hdr-sub">Attendance Management</div>
+        </div>
+        <button class="back-btn" onclick="location.href='admin-dashboard.html'">← Back</button>
+    </div>
+    <div class="body">
+        <div class="page-title">Add Subject</div>
+        <div class="page-sub">Curriculum Management</div>
+
+        <div class="add-row">
+            <input type="text" id="subjectName" placeholder="Enter subject name">
+            <button class="btn" onclick="addSubject()">Add</button>
+        </div>
+        <div id="msg" class="msg" style="display:none;"></div>
+
+        <div class="tbl-wrap">
+            <table>
+                <thead><tr><th>#</th><th>Subject Name</th><th>Action</th></tr></thead>
+                <tbody id="tbody"><tr><td colspan="3" class="empty">Loading subjects…</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    const API="http://localhost:8080";
+    function loadSubjects(){
+      fetch(`${API}/subjects`).then(r=>r.json()).then(data=>{
+        let tb=document.getElementById("tbody");
+        if(!data.length){tb.innerHTML='<tr><td colspan="3" class="empty">No subjects added yet.</td></tr>';return;}
+        tb.innerHTML=data.map(s=>`
+          <tr>
+            <td>${s.id}</td>
+            <td>${s.subject}</td>
+            <td><button class="del-btn" onclick="deleteSubject(${s.id})">Delete</button></td>
+          </tr>`).join('');
+      }).catch(()=>{document.getElementById("tbody").innerHTML='<tr><td colspan="3" class="empty">Could not load subjects.</td></tr>';});
+    }
+    function addSubject(){
+      let sub=document.getElementById("subjectName").value.trim();
+      let msg=document.getElementById("msg");
+      msg.style.display="block";
+      if(!sub){msg.innerText="Please enter a subject name.";msg.className="msg error";return;}
+      fetch(`${API}/addSubject`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({subject:sub})})
+      .then(r=>r.text()).then(()=>{
+        msg.innerText="Subject added successfully!";msg.className="msg success";
+        document.getElementById("subjectName").value="";loadSubjects();
+      }).catch(()=>{msg.innerText="Server error.";msg.className="msg error";});
+    }
+    function deleteSubject(id){
+      if(!confirm("Delete this subject?"))return;
+      fetch(`${API}/subjects/${id}`,{method:"DELETE"}).then(()=>loadSubjects());
+    }
+    loadSubjects();
+</script>
+</body>
+</html>

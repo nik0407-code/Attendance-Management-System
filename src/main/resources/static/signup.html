@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up — AMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+          font-family: 'DM Sans', sans-serif;
+          min-height: 100vh;
+          display: flex; justify-content: center; align-items: center;
+          background: #e8f5ee; padding: 40px 20px;
+        }
+        .container {
+          width: 420px; border-radius: 18px; overflow: hidden;
+          box-shadow: 0 0 0 1px rgba(15,110,86,0.12), 0 12px 40px rgba(15,110,86,0.12), 0 2px 8px rgba(0,0,0,0.06);
+          background: #fff; animation: fadeUp 0.5s ease both;
+        }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+
+        /* HEADER */
+        .header {
+          background: linear-gradient(135deg, #074a30 0%, #0f6e56 60%, #1d9e75 100%);
+          padding: 28px 24px 24px; text-align: center; position: relative; overflow: hidden;
+        }
+        .header::before {
+          content:''; position:absolute; top:0; left:0; right:0; height:2px;
+          background: linear-gradient(90deg, transparent, #9fe1cb, #5dcaa5, transparent);
+        }
+        .header::after {
+          content:''; position:absolute; top:-50px; right:-50px;
+          width:180px; height:180px; border-radius:50%;
+          background: radial-gradient(circle, rgba(157,225,203,0.12), transparent 70%); pointer-events:none;
+        }
+        .logo-wrap {
+          position:relative; z-index:2; display:inline-flex; align-items:center; gap:12px;
+        }
+        .logo-mark {
+          width:42px; height:42px; border:1.5px solid rgba(157,225,203,0.55); border-radius:10px;
+          display:flex; align-items:center; justify-content:center;
+          font-family:'Cormorant Garamond',serif; font-size:22px; color:#9fe1cb; background:rgba(255,255,255,0.07);
+        }
+        .brand-text { text-align:left; }
+        .brand-name {
+          font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:600;
+          color:#e8faf4; letter-spacing:4px; line-height:1;
+        }
+        .brand-sub { font-size:9px; color:rgba(157,225,203,0.6); letter-spacing:2px; text-transform:uppercase; margin-top:3px; }
+
+        /* FORM */
+        .form { padding: 28px 28px 32px; }
+        .form-title {
+          font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:300;
+          color:#0a3d28; text-align:center; margin-bottom:4px;
+        }
+        .form-sub { font-size:9px; letter-spacing:3px; text-transform:uppercase; color:#0f6e56; text-align:center; margin-bottom:20px; }
+
+        .field { margin-bottom:10px; }
+        .field input, .field select {
+          width:100%; font-family:'DM Sans',sans-serif; font-size:13px;
+          padding:11px 14px; border:1px solid #c8ead8; border-radius:8px;
+          background:#f7fdf9; color:#0a3d28; outline:none;
+          transition:border-color 0.2s, box-shadow 0.2s, background 0.2s; appearance:none;
+        }
+        .field input::placeholder { color:#a0c4b2; }
+        .field input:focus, .field select:focus {
+          border-color:#5dcaa5; background:#fff; box-shadow:0 0 0 3px rgba(93,202,165,0.14);
+        }
+
+        /* Student extra fields slide in */
+        .student-fields { overflow:hidden; max-height:0; transition:max-height 0.35s ease; }
+        .student-fields.visible { max-height:200px; }
+
+        .fields-label {
+          font-size:9px; letter-spacing:2px; text-transform:uppercase;
+          color:#7ab89a; margin:10px 0 8px; display:none;
+        }
+        .fields-label.visible { display:block; }
+
+        .mint-line { height:1px; background:linear-gradient(90deg,transparent,#9fe1cb,transparent); margin:18px 0; opacity:0.7; }
+
+        .btn-submit {
+          width:100%; font-family:'DM Sans',sans-serif; font-size:11px; font-weight:600;
+          letter-spacing:2px; text-transform:uppercase; padding:13px; border:none; border-radius:8px;
+          background:linear-gradient(135deg,#074a30,#0f6e56); color:#e8faf4; cursor:pointer;
+          transition:0.3s; display:flex; align-items:center; justify-content:center; gap:8px;
+        }
+        .btn-submit:hover { transform:scale(1.02); box-shadow:0 8px 28px rgba(15,110,86,0.28); }
+
+        .msg-box {
+          text-align:center; font-size:12px; margin-top:12px;
+          padding:9px 14px; border-radius:8px; display:none;
+        }
+        .msg-box.success { display:block; background:#e4f7ef; color:#0f6e56; border:1px solid #9fe1cb; }
+        .msg-box.error   { display:block; background:#fce8e8; color:#a32d2d; border:1px solid #f5b8b8; }
+
+        .link { text-align:center; margin-top:14px; font-size:12px; color:#7ab89a; }
+        .link a {
+          color:#0f6e56; font-weight:500; text-decoration:none;
+          border-bottom:1px solid #9fe1cb; padding-bottom:1px; transition:color 0.2s;
+        }
+        .link a:hover { color:#074a30; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div class="logo-wrap">
+            <div class="logo-mark">A</div>
+            <div class="brand-text">
+                <div class="brand-name">AMS</div>
+                <div class="brand-sub">Attendance Management</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form">
+        <div class="form-title">Create Account</div>
+        <div class="form-sub">Register to get started</div>
+
+        <div class="field"><input type="text"     id="name"     placeholder="Full Name"></div>
+        <div class="field"><input type="email"    id="email"    placeholder="Email Address"></div>
+        <div class="field"><input type="password" id="password" placeholder="Password"></div>
+        <div class="field">
+            <select id="role" onchange="toggleStudentFields()">
+                <option value="">Select Role</option>
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+                <option value="admin">Admin</option>
+            </select>
+        </div>
+
+        <!-- Student-only fields -->
+        <div class="fields-label" id="studentLabel">Student Details</div>
+        <div class="student-fields" id="studentFields">
+            <div class="field"><input type="number" id="roll" placeholder="Roll Number"></div>
+            <div class="field">
+                <select id="year">
+                    <option value="">Select Year</option>
+                    <option value="FE">FE — First Year</option>
+                    <option value="SE">SE — Second Year</option>
+                    <option value="TE">TE — Third Year</option>
+                    <option value="BE">BE — Final Year</option>
+                </select>
+            </div>
+            <div class="field">
+                <input type="tel" id="contact" placeholder="Contact Number" maxlength="10"
+                       oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+            </div>
+        </div>
+
+        <div class="mint-line"></div>
+
+        <button class="btn-submit" onclick="signup()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                <path d="M22 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
+            </svg>
+            Sign Up
+        </button>
+
+        <div class="msg-box" id="msg"></div>
+        <div class="link">Already have an account? <a href="login.html">Login</a></div>
+    </div>
+</div>
+
+<script>
+    function toggleStudentFields(){
+      let role = document.getElementById("role").value
+      let fields = document.getElementById("studentFields")
+      let label  = document.getElementById("studentLabel")
+      if(role === "student"){
+        fields.classList.add("visible")
+        label.classList.add("visible")
+      } else {
+        fields.classList.remove("visible")
+        label.classList.remove("visible")
+      }
+    }
+
+    function showMsg(text, type){
+      let el = document.getElementById("msg")
+      el.innerText = text
+      el.className = "msg-box " + type
+    }
+
+    function signup(){
+      let name     = document.getElementById("name").value.trim()
+      let email    = document.getElementById("email").value.trim()
+      let password = document.getElementById("password").value.trim()
+      let role     = document.getElementById("role").value
+      let roll     = document.getElementById("roll").value
+      let year     = document.getElementById("year").value
+      let contact  = document.getElementById("contact").value
+
+      if(!name || !email || !password || !role){ showMsg("Please fill all fields","error"); return }
+
+      let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if(!emailPattern.test(email)){ showMsg("Enter a valid email address","error"); return }
+
+      if(role==="student" && (!roll || !year || !contact)){ showMsg("All student fields are required","error"); return }
+
+      let data = {
+        name, email, password, role,
+        rollno:  role==="student" ? parseInt(roll) : null,
+        year:    role==="student" ? year : null,
+        contact: role==="student" ? contact : null
+      }
+
+      fetch("http://localhost:8080/signup",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify(data)
+      })
+      .then(res=>res.text())
+      .then(res=>{
+        if(res.toLowerCase().includes("success")){
+          showMsg(res,"success")
+          setTimeout(()=>{ window.location.href="login.html" },1500)
+        } else {
+          showMsg(res,"error")
+        }
+      })
+      .catch(()=>showMsg("Server Error","error"))
+    }
+</script>
+</body>
+</html>

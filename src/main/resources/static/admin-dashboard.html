@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard — AMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root{
+          --mint:#e8f5ef; --forest:#1b4332; --forest2:#2d6a4f;
+          --teal:#2a9d7f; --teal-l:#52b788; --teal-pale:#d8f3dc;
+          --white:#fff; --text:#1b3a2d; --muted:#6b8f77; --border:#c8e6d0;
+          --red:#c0392b; --red-pale:#fdecea;
+          --shadow:0 8px 40px rgba(27,67,50,0.13); --r:16px;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'DM Sans',sans-serif;min-height:100vh;background:var(--mint);display:flex;justify-content:center;align-items:center;padding:24px;}
+
+        .card{background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;width:100%;max-width:720px;}
+
+        /* HEADER */
+        .hdr{
+          background:linear-gradient(135deg,var(--forest) 60%,var(--forest2));
+          padding:20px 28px;display:flex;align-items:center;gap:16px;
+        }
+        .hdr-logo-box{
+          width:44px;height:44px;border:1.5px solid rgba(255,255,255,0.35);
+          border-radius:10px;display:flex;align-items:center;justify-content:center;
+          font-family:'Cormorant Garamond',serif;font-size:22px;color:#fff;font-weight:600;
+        }
+        .hdr-text{flex:1;}
+        .hdr-title{font-family:'DM Sans',sans-serif;font-size:18px;font-weight:600;color:#fff;letter-spacing:2px;}
+        .hdr-sub{font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:2px;margin-top:2px;text-transform:uppercase;}
+        .hdr-logout{
+          background:transparent;border:1.5px solid rgba(255,255,255,0.5);
+          color:#fff;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:600;
+          letter-spacing:1px;text-transform:uppercase;cursor:pointer;
+          transition:background .2s,border-color .2s;font-family:'DM Sans',sans-serif;
+        }
+        .hdr-logout:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.8);}
+
+        /* BODY */
+        .body{padding:36px 32px 32px;}
+        .page-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:400;color:var(--text);text-align:center;margin-bottom:4px;}
+        .page-sub{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:30px;}
+
+        /* GRID */
+        .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
+        .menu-btn{
+          display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;
+          padding:18px 16px 14px;border:1.5px solid var(--border);border-radius:12px;
+          background:var(--white);cursor:pointer;transition:all .22s;text-align:left;
+          position:relative;overflow:hidden;min-height:96px;
+        }
+        .menu-btn::after{
+          content:'';position:absolute;top:0;left:0;right:0;height:3px;
+          background:linear-gradient(90deg,var(--teal),var(--teal-l));
+          opacity:0;transition:opacity .22s;
+        }
+        .menu-btn:hover{border-color:var(--teal);background:var(--teal-pale);transform:translateY(-2px);box-shadow:0 4px 16px rgba(42,157,127,0.15);}
+        .menu-btn:hover::after{opacity:1;}
+        .menu-icon{font-size:20px;margin-bottom:8px;}
+        .menu-label{font-size:13px;font-weight:600;color:var(--text);line-height:1.3;}
+
+        /* LOGOUT AREA */
+        .actions{display:flex;gap:12px;}
+        .btn-logout{
+          flex:1;padding:13px;border:1.5px solid var(--border);border-radius:10px;
+          background:var(--white);color:var(--muted);font-size:13px;font-weight:600;
+          letter-spacing:.5px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+          gap:8px;transition:all .2s;font-family:'DM Sans',sans-serif;
+        }
+        .btn-logout:hover{border-color:var(--red);color:var(--red);background:var(--red-pale);}
+
+        @media(max-width:580px){.grid{grid-template-columns:repeat(2,1fr);}}
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="hdr">
+        <div class="hdr-logo-box">A</div>
+        <div class="hdr-text">
+            <div class="hdr-title">AMS</div>
+            <div class="hdr-sub">Attendance Management</div>
+        </div>
+        <button class="hdr-logout" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="body">
+        <div class="page-title">Admin Dashboard</div>
+        <div class="page-sub">Admin Portal</div>
+
+        <div class="grid">
+            <button class="menu-btn" onclick="location.href='add-student.html'">
+                <span class="menu-icon">🎓</span>
+                <span class="menu-label">Add Student</span>
+            </button>
+            <button class="menu-btn" onclick="location.href='add-subject.html'">
+                <span class="menu-icon">📚</span>
+                <span class="menu-label">Add Subject</span>
+            </button>
+            <button class="menu-btn" onclick="location.href='mark-attendance.html'">
+                <span class="menu-icon">✅</span>
+                <span class="menu-label">Mark Attendance</span>
+            </button>
+            <button class="menu-btn" onclick="location.href='view-attendanceAdmin.html'">
+                <span class="menu-icon">📊</span>
+                <span class="menu-label">View Attendance</span>
+            </button>
+            <button class="menu-btn" onclick="location.href='delete-user.html'">
+                <span class="menu-icon">🗑️</span>
+                <span class="menu-label">Delete User</span>
+            </button>
+            <button class="menu-btn" onclick="location.href='add-teacher.html'">
+                <span class="menu-icon">👨‍🏫</span>
+                <span class="menu-label">Add Teacher</span>
+            </button>
+            <button class="menu-btn" onclick="location.href='assign-subject.html'">
+                <span class="menu-icon">🔗</span>
+                <span class="menu-label">Assign Subject</span>
+            </button>
+            <button class="menu-btn" onclick="location.href='edit-attendance.html'">
+                <span class="menu-icon">✏️</span>
+                <span class="menu-label">Edit Attendance</span>
+            </button>
+        </div>
+
+        <div class="actions">
+            <button class="btn-logout" onclick="logout()">
+                <span>↪</span> Logout
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let role=localStorage.getItem("role");
+    if(role!=="admin"){alert("Access Denied! Admin Only.");window.location.href="login.html";}
+    function logout(){localStorage.removeItem("role");alert("Logged Out Successfully");window.location.href="login.html";}
+</script>
+</body>
+</html>
