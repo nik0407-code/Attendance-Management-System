@@ -171,7 +171,7 @@ Attendance Management System
 ## Clone Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/Attendance-Management-System.git
+git clone https://github.com/nik0407-code/Attendance-Management-System.git
 ```
 
 ---
@@ -306,23 +306,6 @@ The system automatically calculates attendance percentage for every student.
 
 ---
 
-# 📸 Screenshots
-
-Add screenshots of the following pages:
-
-- Login Page
-- Admin Dashboard
-- Teacher Dashboard
-- Student Dashboard
-- Mark Attendance
-- View Attendance
-- Defaulter List
-- Attendance Report
-- CSV Export
-- PDF Export
-
----
-
 # 🌟 Future Enhancements
 
 - QR Code Attendance
@@ -345,7 +328,7 @@ Add screenshots of the following pages:
 Computer Engineering Student
 
 GitHub:
-https://github.com/YOUR_USERNAME
+https://github.com/nik0407-code
 
 ---
 
