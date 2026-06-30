@@ -327,8 +327,7 @@ The system automatically calculates attendance percentage for every student.
 
 Computer Engineering Student
 
-GitHub:
-https://github.com/nik0407-code
+GitHub: https://github.com/nik0407-code
 
 ---
 
