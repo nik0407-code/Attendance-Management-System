@@ -1,438 +1,473 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Teacher Dashboard — AMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet"/>
     <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          font-family: 'DM Sans', 'Segoe UI', sans-serif;
+        :root {
+          --green-dark:   #0e1f10;
+          --green-deep:   #1a3d1e;
+          --green-mid:    #1e6b2e;
+          --green-accent: #2e9e47;
+          --green-light:  #eaf3eb;
+          --green-border: #c0d9c2;
+          --bg:           #f0f5f0;
+          --card:         #ffffff;
+          --text:         #0d200f;
+          --text-muted:   #8aaa8e;
+          --border:       #ddeadd;
+          --red:          #c0392b;
+          --red-pale:     #fdf2f2;
+          --amber:        #b07a00;
+          --amber-pale:   #fff8e6;
+          --blue:         #1a5fa8;
+          --blue-pale:    #edf3fc;
+          --shadow-sm:    0 1px 4px rgba(10,40,15,0.07);
+          --shadow-md:    0 4px 16px rgba(10,40,15,0.10);
         }
 
-        body {
-          min-height: 100vh;
-          background: #e8f5ee;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          padding: 40px 20px;
+        html, body { height: 100%; font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); }
+
+        .shell { display: flex; height: 100vh; overflow: hidden; }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+          width: 220px; flex-shrink: 0;
+          background: var(--green-dark);
+          display: flex; flex-direction: column;
+          padding: 20px 14px; overflow-y: auto;
         }
 
-        .container {
-          width: 850px;
-          border-radius: 18px;
-          overflow: hidden;
-          box-shadow:
-            0 0 0 1px rgba(15,110,86,0.12),
-            0 12px 40px rgba(15,110,86,0.1),
-            0 2px 8px rgba(0,0,0,0.06);
-          background: #ffffff;
-          animation: fadeUp 0.5s ease both;
-        }
+        .sb-brand { display: flex; align-items: center; gap: 11px; padding: 0 4px; margin-bottom: 30px; }
 
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to   { opacity: 1; transform: none; }
-        }
-
-        .header {
-          background: linear-gradient(135deg, #074a30 0%, #0f6e56 60%, #1d9e75 100%);
-          padding: 30px 25px;
-          text-align: center;
-          color: white;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .header::before {
-          content: '';
-          position: absolute;
-          top: 0; left: 0; right: 0;
-          height: 3px;
-          background: linear-gradient(90deg, transparent, #9fe1cb, #5dcaa5, transparent);
-        }
-
-        .header::after {
-          content: '';
-          position: absolute;
-          top: -60px; right: -60px;
-          width: 220px; height: 220px;
-          border-radius: 50%;
-          background: radial-gradient(circle, rgba(157,225,203,0.12), transparent 70%);
-          pointer-events: none;
-        }
-
-        .header-inner {
-          display: inline-flex;
-          align-items: center;
-          gap: 14px;
-          margin-bottom: 6px;
-          position: relative;
-          z-index: 1;
-        }
-
-        .logo-mark {
-          width: 44px; height: 44px;
-          border: 1.5px solid rgba(157,225,203,0.6);
-          border-radius: 10px;
+        .sb-logo {
+          width: 36px; height: 36px; border-radius: 10px;
+          background: linear-gradient(135deg, #3ec45a, #1a6b2e);
           display: flex; align-items: center; justify-content: center;
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 22px;
-          color: #9fe1cb;
-          background: rgba(255,255,255,0.08);
+          font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: #fff;
+          flex-shrink: 0; box-shadow: 0 0 0 1px rgba(255,255,255,0.12) inset;
         }
 
-        .header h1 {
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 32px;
-          font-weight: 600;
-          margin-bottom: 0;
-          color: #e8faf4;
-          letter-spacing: 4px;
+        .sb-name { font-family: 'Fraunces', serif; font-size: 16px; font-weight: 600; color: #fff; letter-spacing: 0.02em; }
+        .sb-tag { font-size: 8.5px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.28); margin-top: 1px; }
+
+        .sb-section { font-size: 8.5px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.22); padding: 0 8px; margin: 18px 0 6px; }
+
+        .sb-item {
+          display: flex; align-items: center; gap: 9px;
+          padding: 9px 10px; border-radius: 8px; cursor: pointer;
+          color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 500;
+          transition: background 0.15s, color 0.15s;
+          text-decoration: none; user-select: none;
         }
 
-        .header p {
-          font-size: 10px;
-          color: rgba(157,225,203,0.6);
-          letter-spacing: 4px;
-          text-transform: uppercase;
-          position: relative;
-          z-index: 1;
+        .sb-item:hover { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.88); }
+        .sb-item.active { background: var(--green-mid); color: #fff; }
+
+        .sb-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.65; flex-shrink: 0; }
+        .sb-dot.red { background: #e74c3c; opacity: 1; }
+        .sb-dot.amber { background: #f39c12; opacity: 1; }
+
+        .sb-badge {
+          margin-left: auto; background: #e74c3c; color: #fff;
+          font-size: 9px; font-weight: 700; padding: 1px 6px;
+          border-radius: 20px; letter-spacing: 0.05em;
         }
 
-        .content {
-          padding: 36px 32px 40px;
-          text-align: center;
-          background: #ffffff;
+        .sb-spacer { flex: 1; }
+
+        .sb-user {
+          display: flex; align-items: center; gap: 10px; padding: 10px 9px;
+          border-radius: 10px; background: rgba(255,255,255,0.06);
+          margin-top: 12px; cursor: pointer; transition: background 0.15s;
+        }
+        .sb-user:hover { background: rgba(255,255,255,0.1); }
+
+        .sb-avatar {
+          width: 30px; height: 30px; border-radius: 50%;
+          background: var(--green-mid); display: flex; align-items: center; justify-content: center;
+          font-size: 11px; color: #fff; font-weight: 600; flex-shrink: 0;
         }
 
-        h2 {
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 26px;
-          font-weight: 300;
-          color: #0a3d28;
-          margin-bottom: 4px;
+        .sb-uname { font-size: 12.5px; color: rgba(255,255,255,0.82); font-weight: 500; }
+        .sb-urole { font-size: 9.5px; color: rgba(255,255,255,0.3); margin-top: 1px; }
+
+        /* ── MAIN ── */
+        .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
+
+        .topbar {
+          background: var(--card); border-bottom: 1px solid var(--border);
+          padding: 14px 28px; display: flex; align-items: center;
+          justify-content: space-between; flex-shrink: 0;
         }
 
-        .mint-sub {
-          font-size: 9px;
-          letter-spacing: 4px;
-          text-transform: uppercase;
-          color: #0f6e56;
-          margin-bottom: 28px;
+        .tb-title { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+        .tb-crumb { font-size: 10.5px; color: var(--text-muted); letter-spacing: 0.06em; margin-top: 2px; }
+
+        .topbar-right { display: flex; align-items: center; gap: 10px; }
+
+        .tb-time { font-size: 11px; color: var(--text-muted); letter-spacing: 0.04em; }
+
+        .tb-pill {
+          background: var(--green-light); border: 1px solid var(--green-border);
+          color: var(--green-mid); font-size: 11px; font-weight: 600;
+          padding: 5px 14px; border-radius: 20px; letter-spacing: 0.06em;
         }
 
-        .action-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 14px;
-          margin-bottom: 28px;
+        .tb-btn {
+          background: var(--green-mid); border: none;
+          color: #fff; font-size: 11.5px; font-weight: 600;
+          padding: 7px 16px; border-radius: 8px; cursor: pointer;
+          font-family: 'Outfit', sans-serif; letter-spacing: 0.04em;
+          display: flex; align-items: center; gap: 7px;
+          transition: all 0.2s; text-decoration: none;
+        }
+        .tb-btn:hover { background: var(--green-accent); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+
+        .tb-logout {
+          background: transparent; border: 1px solid var(--border);
+          color: var(--text-muted); font-size: 11.5px; font-weight: 500;
+          padding: 6px 15px; border-radius: 8px; cursor: pointer;
+          font-family: 'Outfit', sans-serif; letter-spacing: 0.04em; transition: all 0.2s;
+        }
+        .tb-logout:hover { border-color: var(--red); color: var(--red); background: var(--red-pale); }
+
+        /* ── CONTENT ── */
+        .content { flex: 1; padding: 24px 28px; overflow-y: auto; }
+
+        @keyframes riseIn { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+
+        /* SECTION HEADER */
+        .sec-hd {
+          font-size: 10px; font-weight: 600; letter-spacing: 0.18em;
+          text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px;
+          display: flex; align-items: center; justify-content: space-between;
         }
 
-        .action-card {
-          background: #f2fbf7;
-          border: 1px solid #c8ead8;
-          border-radius: 12px;
-          padding: 22px 16px 18px;
-          text-align: center;
-          cursor: pointer;
-          transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-          animation: fadeUp 0.5s ease both;
-          text-decoration: none;
-        }
-        .action-card:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 8px 24px rgba(15,110,86,0.12);
-          border-color: #9fe1cb;
+        .sec-hd a { font-size: 10px; color: var(--green-mid); text-decoration: none; letter-spacing: 0.06em; transition: opacity 0.15s; }
+        .sec-hd a:hover { opacity: 0.7; }
+
+        /* QUICK ACTIONS */
+        .mod-grid {
+          display: grid; grid-template-columns: repeat(4, minmax(0,1fr));
+          gap: 10px; margin-bottom: 26px;
         }
 
-        .action-card:nth-child(1){ animation-delay: 0.15s; }
-        .action-card:nth-child(2){ animation-delay: 0.22s; }
-        .action-card:nth-child(3){ animation-delay: 0.29s; }
+        .mod-card {
+          background: var(--card); border: 1px solid var(--border);
+          border-radius: 13px; padding: 17px 15px 14px;
+          cursor: pointer; position: relative; overflow: hidden;
+          transition: all 0.22s cubic-bezier(0.34, 1.3, 0.64, 1);
+          display: flex; flex-direction: column; min-height: 100px;
+          box-shadow: var(--shadow-sm); text-decoration: none;
+          animation: riseIn 0.45s ease both;
+        }
 
-        .action-icon {
-          width: 44px; height: 44px;
-          border-radius: 10px;
-          background: linear-gradient(135deg, #0f6e56, #1d9e75);
+        .mod-card:nth-child(1){ animation-delay: 0.25s; }
+        .mod-card:nth-child(2){ animation-delay: 0.3s; }
+        .mod-card:nth-child(3){ animation-delay: 0.35s; }
+        .mod-card:nth-child(4){ animation-delay: 0.4s; }
+
+        .mod-card:hover { border-color: var(--green-accent); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .mod-card.danger:hover { border-color: var(--red); box-shadow: 0 4px 16px rgba(192,57,43,0.10); }
+        .mod-card.warn:hover   { border-color: #f39c12; box-shadow: 0 4px 16px rgba(243,156,18,0.12); }
+
+        .mod-card::before {
+          content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+          background: var(--green-accent); border-radius: 3px 0 0 3px; opacity: 0; transition: opacity 0.2s;
+        }
+        .mod-card:hover::before { opacity: 1; }
+        .mod-card.danger::before { background: var(--red); }
+        .mod-card.warn::before   { background: #f39c12; }
+
+        .mod-icon-box {
+          width: 34px; height: 34px; border-radius: 9px;
+          background: var(--green-light);
           display: flex; align-items: center; justify-content: center;
-          margin: 0 auto 10px;
+          font-size: 15px; margin-bottom: 10px; flex-shrink: 0;
+        }
+        .mod-card.danger .mod-icon-box { background: var(--red-pale); }
+        .mod-card.warn   .mod-icon-box { background: var(--amber-pale); }
+
+        .mod-title { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.25; }
+        .mod-desc  { font-size: 10.5px; color: var(--text-muted); margin-top: 4px; line-height: 1.4; }
+
+        .mod-arrow {
+          position: absolute; bottom: 12px; right: 13px; font-size: 12px;
+          color: var(--green-accent); opacity: 0; transform: translateX(-3px); transition: all 0.18s;
+        }
+        .mod-card:hover .mod-arrow { opacity: 1; transform: translateX(0); }
+        .mod-card.danger .mod-arrow { color: var(--red); }
+        .mod-card.warn   .mod-arrow { color: var(--amber); }
+
+        /* TABLE SECTION */
+        .table-section {
+          background: var(--card); border: 1px solid var(--border);
+          border-radius: 13px; overflow: hidden; box-shadow: var(--shadow-sm);
+          animation: riseIn 0.45s 0.45s ease both;
         }
 
-        .action-icon svg { color: #e8faf4; }
-
-        .action-title {
-          font-size: 13px;
-          font-weight: 500;
-          color: #0a3d28;
-          margin-bottom: 3px;
+        .table-hd {
+          padding: 14px 20px; border-bottom: 1px solid var(--border);
+          display: flex; align-items: center; justify-content: space-between;
         }
 
-        .action-desc {
-          font-size: 10px;
-          color: #7ab89a;
-          letter-spacing: 0.5px;
+        .table-hd-title {
+          font-size: 12px; font-weight: 600; color: var(--text);
+          display: flex; align-items: center; gap: 9px;
         }
 
-        .mint-line {
-          height: 1px;
-          background: linear-gradient(90deg, transparent, #9fe1cb, transparent);
-          margin: 0 0 28px;
-          opacity: 0.8;
+        .live-dot {
+          width: 7px; height: 7px; border-radius: 50%;
+          background: var(--green-accent); animation: pulse 2s ease infinite;
         }
 
-        button {
-          font-family: 'DM Sans', sans-serif;
-          font-size: 11px;
-          font-weight: 500;
-          letter-spacing: 1.5px;
-          text-transform: uppercase;
-          padding: 13px 22px;
-          border: none;
-          border-radius: 8px;
-          background: linear-gradient(135deg, #074a30, #0f6e56);
-          color: #e8faf4;
-          cursor: pointer;
-          margin: 8px 6px;
-          transition: 0.3s;
-          display: inline-flex;
-          align-items: center;
-          gap: 7px;
+        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+        .filter-row { display: flex; gap: 6px; }
+
+        .filter-btn {
+          font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 600;
+          padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border);
+          background: transparent; color: var(--text-muted); cursor: pointer;
+          transition: all 0.15s; letter-spacing: 0.5px; text-transform: uppercase;
         }
 
-        button:hover {
-          transform: scale(1.05);
-          box-shadow: 0 8px 28px rgba(15,110,86,0.3);
+        .filter-btn:hover, .filter-btn.active {
+          background: var(--green-light); border-color: var(--green-border); color: var(--green-mid);
         }
 
-        .logout {
-          background: transparent;
-          border: 1px solid #c8ead8;
-          color: #7ab89a;
+        .data-table { width: 100%; border-collapse: collapse; }
+
+        .data-table th {
+          padding: 10px 20px; font-size: 9px; letter-spacing: 0.16em;
+          text-transform: uppercase; color: var(--text-muted);
+          text-align: left; border-bottom: 1px solid var(--border);
+          background: rgba(234,243,235,0.5); font-weight: 600;
         }
 
-        .logout:hover {
-          background: #f0faf6;
-          border-color: #9fe1cb;
-          color: #0f6e56;
-          box-shadow: none;
+        .data-table td {
+          padding: 12px 20px; font-size: 13px; color: var(--text-muted);
+          border-bottom: 1px solid var(--border);
         }
 
-        .table-wrap {
-          background: #f7fdf9;
-          border: 1px solid #c8ead8;
-          border-radius: 12px;
-          overflow: hidden;
-          margin-top: 24px;
+        .data-table tbody tr:last-child td { border-bottom: none; }
+        .data-table tbody tr { transition: background 0.12s; }
+        .data-table tbody tr:hover td { background: var(--green-light); color: var(--text); }
+
+        .student-id { font-size: 11.5px; font-weight: 600; color: var(--green-mid); font-family: monospace; }
+
+        .subject-tag {
+          display: inline-block; background: var(--green-light);
+          border: 1px solid var(--green-border); border-radius: 5px;
+          padding: 2px 8px; font-size: 11px; color: var(--green-mid); font-weight: 500;
         }
 
-        .table-top {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 12px 18px;
-          border-bottom: 1px solid #c8ead8;
-          background: #edf9f3;
+        .status-pill {
+          display: inline-flex; align-items: center; gap: 5px;
+          border-radius: 20px; padding: 3px 10px; font-size: 11px;
+          font-weight: 600; letter-spacing: 0.3px;
+        }
+        .status-pill::before { content: ''; width: 5px; height: 5px; border-radius: 50%; }
+
+        .s-present { background: var(--green-light); color: var(--green-mid); border: 1px solid var(--green-border); }
+        .s-present::before { background: var(--green-accent); }
+
+        .s-absent { background: var(--red-pale); color: var(--red); border: 1px solid rgba(192,57,43,0.2); }
+        .s-absent::before { background: var(--red); }
+
+        .s-leave { background: var(--amber-pale); color: var(--amber); border: 1px solid rgba(176,122,0,0.2); }
+        .s-leave::before { background: #f39c12; }
+
+        .empty-state { padding: 48px 24px; text-align: center; color: var(--text-muted); font-size: 13px; }
+        .empty-state svg { opacity: 0.3; margin: 0 auto 12px; display: block; }
+
+        .load-btn {
+          display: inline-flex; align-items: center; gap: 8px;
+          background: var(--green-light); border: 1px solid var(--green-border);
+          border-radius: 8px; padding: 7px 14px;
+          font-family: 'Outfit', sans-serif; font-size: 11.5px; font-weight: 600;
+          color: var(--green-mid); cursor: pointer; transition: all 0.15s;
+        }
+        .load-btn:hover { background: #d4ecda; transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+
+        /* FOOTER */
+        .footer-bar {
+          background: var(--card); border-top: 1px solid var(--border);
+          padding: 12px 28px; display: flex; align-items: center;
+          justify-content: space-between; flex-shrink: 0;
         }
 
-        .table-top strong {
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 15px;
-          font-weight: 400;
-          color: #0a3d28;
+        .footer-text { font-size: 11px; color: var(--text-muted); letter-spacing: 0.06em; }
+
+        .btn-logout-full {
+          background: transparent; border: 1px solid var(--border);
+          color: var(--text-muted); font-size: 12px; font-weight: 500;
+          padding: 8px 22px; border-radius: 8px; cursor: pointer;
+          font-family: 'Outfit', sans-serif;
+          display: flex; align-items: center; gap: 7px; transition: all 0.2s;
         }
+        .btn-logout-full:hover { border-color: var(--red); color: var(--red); background: var(--red-pale); }
 
-        .table-top span {
-          font-size: 10px;
-          color: #7ab89a;
-          letter-spacing: 1px;
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--green-border); border-radius: 3px; }
+
+        @media (max-width: 768px) {
+          .sidebar { width: 180px; }
+          .kpi-row { grid-template-columns: repeat(2, minmax(0,1fr)); }
+          .mod-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
         }
-
-        table {
-          width: 100%;
-          margin-top: 0;
-          border-collapse: collapse;
+        @media (max-width: 540px) {
+          .sidebar { display: none; }
+          .mod-grid { grid-template-columns: minmax(0,1fr); }
+          .content { padding: 16px; }
         }
-
-        th, td {
-          border: none;
-          border-bottom: 1px solid #e4f5ec;
-          padding: 11px 18px;
-          text-align: left;
-        }
-
-        th {
-          background: #edf9f3;
-          color: #0f6e56;
-          font-size: 9px;
-          font-weight: 500;
-          letter-spacing: 2px;
-          text-transform: uppercase;
-          border-bottom: 1px solid #9fe1cb;
-        }
-
-        td {
-          font-size: 13px;
-          color: #3a6a50;
-        }
-
-        tbody tr:hover td { background: #f2fbf7; }
-        tbody tr:last-child td { border-bottom: none; }
-
-        td.status-present { color: #0f6e56; font-weight: 500; }
-        td.status-absent  { color: #a32d2d; font-weight: 500; }
-        td.status-leave   { color: #1d9e75; font-weight: 500; }
-
     </style>
 </head>
-
 <body>
 
-<div class="container">
+<div class="shell">
 
-    <div class="header">
-        <div class="header-inner">
-            <div class="logo-mark">A</div>
-            <h1>AMS</h1>
+    <!-- ── SIDEBAR ── -->
+    <div class="sidebar">
+        <div class="sb-brand">
+            <div class="sb-logo">A</div>
+            <div>
+                <div class="sb-name">AMS</div>
+                <div class="sb-tag">Teacher Portal</div>
+            </div>
         </div>
-        <p>Attendance Management System</p>
+
+        <div class="sb-section">Attendance</div>
+        <div class="sb-item active"><div class="sb-dot"></div> Dashboard</div>
+        <a class="sb-item" href="mark-attendance.html"><div class="sb-dot"></div> Mark Attendance</a>
+        <a class="sb-item" href="view-attendanceAdmin.html"><div class="sb-dot"></div> View Records</a>
+        <a class="sb-item" href="edit-attendance.html"><div class="sb-dot"></div> Edit Records</a>
+        <a class="sb-item" href="defaulter-list.html"><div class="sb-dot red"></div> Defaulters <span class="sb-badge">3</span></a>
+
+        <div class="sb-spacer"></div>
+
+        <div class="sb-user" onclick="logout()">
+            <div class="sb-avatar" id="avatarInitials">MK</div>
+            <div>
+                <div class="sb-uname" id="teacherName">Mrs. M. Kapoor</div>
+                <div class="sb-urole">Teacher</div>
+            </div>
+        </div>
     </div>
 
-    <div class="content">
+    <!-- ── MAIN ── -->
+    <div class="main">
 
-        <h2>Teacher Dashboard</h2>
-        <div class="mint-sub">Teacher Portal</div>
-
-        <!-- QUICK ACTION CARDS -->
-        <div class="action-grid">
-
-            <div class="action-card" onclick="location.href='mark-attendance.html'">
-                <div class="action-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-                    </svg>
-                </div>
-                <div class="action-title">Mark Attendance</div>
-                <div class="action-desc">Record today's session</div>
+        <!-- TOP BAR -->
+        <div class="topbar">
+            <div>
+                <div class="tb-title">Teacher Dashboard</div>
+                <div class="tb-crumb" id="live-time">AMS &nbsp;/&nbsp; Teacher &nbsp;/&nbsp; Overview</div>
             </div>
-
-            <div class="action-card" onclick="location.href='view-attendanceAdmin.html'">
-                <div class="action-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
-                        <rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/>
+            <div class="topbar-right">
+                <div class="tb-time" id="date-chip">—</div>
+                <div class="tb-pill">&#9679; <span id="pill-name">Teacher</span></div>
+                <a class="tb-btn" href="mark-attendance.html">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M9 11l3 3L22 4"/>
                     </svg>
-                </div>
-                <div class="action-title">View Attendance</div>
-                <div class="action-desc">Browse all records</div>
+                    Mark Attendance
+                </a>
+                <button class="tb-logout" onclick="logout()">&#8617; Logout</button>
             </div>
-
-            <div class="action-card" onclick="location.href='edit-attendance.html'">
-                <div class="action-icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-                        <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                    </svg>
-                </div>
-                <div class="action-title">Edit Attendance</div>
-                <div class="action-desc">Correct existing entries</div>
-            </div>
-
         </div>
 
-        <div class="mint-line"></div>
+        <!-- CONTENT -->
+        <div class="content">
 
-
-
-
-
-
-        <div class="table-wrap" id="tableWrap" style="display:none">
-            <div class="table-top">
-                <strong>Attendance Records</strong>
-                <span id="tableCount">0 records</span>
+            <!-- QUICK ACTIONS -->
+            <div class="sec-hd">Quick actions</div>
+            <div class="mod-grid">
+                <a class="mod-card" href="mark-attendance.html">
+                    <div class="mod-icon-box">&#9989;</div>
+                    <div class="mod-title">Mark Attendance</div>
+                    <div class="mod-desc">Record today's class session</div>
+                    <div class="mod-arrow">&#8594;</div>
+                </a>
+                <a class="mod-card" href="view-attendanceAdmin.html">
+                    <div class="mod-icon-box">&#128202;</div>
+                    <div class="mod-title">View Records</div>
+                    <div class="mod-desc">Browse all attendance data</div>
+                    <div class="mod-arrow">&#8594;</div>
+                </a>
+                <a class="mod-card warn" href="edit-attendance.html">
+                    <div class="mod-icon-box">&#9999;&#65039;</div>
+                    <div class="mod-title">Edit Entries</div>
+                    <div class="mod-desc">Correct existing records</div>
+                    <div class="mod-arrow">&#8594;</div>
+                </a>
+                <a class="mod-card danger" href="defaulter-list.html">
+                    <div class="mod-icon-box">&#128203;</div>
+                    <div class="mod-title">Defaulter List</div>
+                    <div class="mod-desc">Students below 75% threshold</div>
+                    <div class="mod-arrow">&#8594;</div>
+                </a>
             </div>
-            <table id="table" style="display:none">
-                <tr>
-                    <th>Student ID</th>
-                    <th>Subject</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Status</th>
-                </tr>
-            </table>
+
+
+
+        </div><!-- /content -->
+
+        <!-- FOOTER -->
+        <div class="footer-bar">
+            <div class="footer-text">AMS &nbsp;&middot;&nbsp; Attendance Management System &nbsp;&middot;&nbsp; v1.0</div>
         </div>
 
-        <button class="logout" onclick="logout()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
-            </svg>
-            Logout
-        </button>
-
-    </div>
-</div>
+    </div><!-- /main -->
+</div><!-- /shell -->
 
 <script>
-
+    /* ── Auth guard ── */
     if(localStorage.getItem("role") !== "teacher"){
       alert("Access Denied");
       window.location.href = "login.html";
     }
 
-    function loadAttendance(){
+    /* ── Populate teacher name ── */
+    (function(){
+      const name = localStorage.getItem("teacherName") || localStorage.getItem("name") || "Teacher";
+      document.getElementById("teacherName").innerText = name;
+      document.getElementById("pill-name").innerText = name;
+      const initials = name.split(" ").map(w => w.charAt(0).toUpperCase()).join("").substring(0,2);
+      document.getElementById("avatarInitials").innerText = initials;
+    })();
 
-      fetch("http://localhost:8080/getAttendance")
-      .then(res => res.json())
-      .then(data => {
-
-        let table = document.getElementById("table")
-        table.style.display = "table"
-
-        document.getElementById("tableWrap").style.display = "block"
-        document.getElementById("tableCount").innerText = data.length + " records"
-
-        table.innerHTML = `
-          <tr>
-            <th>Student ID</th>
-            <th>Subject</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Status</th>
-          </tr>
-        `
-
-        data.forEach(a => {
-          let row = table.insertRow()
-          row.insertCell(0).innerText = a.studentId
-          row.insertCell(1).innerText = a.subject
-          row.insertCell(2).innerText = a.date
-          row.insertCell(3).innerText = a.time
-
-          let statusCell = row.insertCell(4)
-          statusCell.innerText = a.status
-          if(a.status === "Present")     statusCell.className = "status-present"
-          else if(a.status === "Absent") statusCell.className = "status-absent"
-          else                           statusCell.className = "status-leave"
-        })
-
-      })
-      .catch(() => {
-        alert("Error loading attendance")
-      })
+    /* ── Live clock ── */
+    function updateClock(){
+      const now = new Date();
+      const days   = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+      const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      document.getElementById("date-chip").textContent =
+        `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+      const name = localStorage.getItem("teacherName") || localStorage.getItem("name") || "Teacher";
+      document.getElementById("live-time").textContent =
+        `${now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})} — Welcome back, ${name}`;
     }
+    updateClock();
+    setInterval(updateClock, 1000);
 
     function logout(){
-      localStorage.clear()
-      window.location.href = "login.html"
+      const ok = confirm("Are you sure you want to logout?");
+      if(ok){
+        localStorage.removeItem("teacherName");
+        localStorage.removeItem("name");
+        localStorage.removeItem("email");
+        localStorage.removeItem("role");
+        window.location.href = "login.html";
+      }
     }
-
 </script>
-
 </body>
 </html>

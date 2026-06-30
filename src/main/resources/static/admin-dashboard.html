@@ -4,139 +4,634 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard — AMS</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
     <style>
-        :root{
-          --mint:#e8f5ef; --forest:#1b4332; --forest2:#2d6a4f;
-          --teal:#2a9d7f; --teal-l:#52b788; --teal-pale:#d8f3dc;
-          --white:#fff; --text:#1b3a2d; --muted:#6b8f77; --border:#c8e6d0;
-          --red:#c0392b; --red-pale:#fdecea;
-          --shadow:0 8px 40px rgba(27,67,50,0.13); --r:16px;
-        }
-        *{margin:0;padding:0;box-sizing:border-box;}
-        body{font-family:'DM Sans',sans-serif;min-height:100vh;background:var(--mint);display:flex;justify-content:center;align-items:center;padding:24px;}
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .card{background:var(--white);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden;width:100%;max-width:720px;}
+        :root {
+          --green-dark:   #0e1f10;
+          --green-deep:   #1a3d1e;
+          --green-mid:    #1e6b2e;
+          --green-accent: #2e9e47;
+          --green-light:  #eaf3eb;
+          --green-border: #c0d9c2;
+          --bg:           #f0f5f0;
+          --card:         #ffffff;
+          --text:         #0d200f;
+          --text-muted:   #8aaa8e;
+          --border:       #ddeadd;
+          --red:          #c0392b;
+          --red-pale:     #fdf2f2;
+          --amber-pale:   #fff8e6;
+          --shadow-sm:    0 1px 4px rgba(10,40,15,0.07);
+          --shadow-md:    0 4px 16px rgba(10,40,15,0.10);
+        }
 
-        /* HEADER */
-        .hdr{
-          background:linear-gradient(135deg,var(--forest) 60%,var(--forest2));
-          padding:20px 28px;display:flex;align-items:center;gap:16px;
+        html, body {
+          height: 100%;
+          font-family: 'Outfit', sans-serif;
+          background: var(--bg);
+          color: var(--text);
         }
-        .hdr-logo-box{
-          width:44px;height:44px;border:1.5px solid rgba(255,255,255,0.35);
-          border-radius:10px;display:flex;align-items:center;justify-content:center;
-          font-family:'Cormorant Garamond',serif;font-size:22px;color:#fff;font-weight:600;
-        }
-        .hdr-text{flex:1;}
-        .hdr-title{font-family:'DM Sans',sans-serif;font-size:18px;font-weight:600;color:#fff;letter-spacing:2px;}
-        .hdr-sub{font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:2px;margin-top:2px;text-transform:uppercase;}
-        .hdr-logout{
-          background:transparent;border:1.5px solid rgba(255,255,255,0.5);
-          color:#fff;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:600;
-          letter-spacing:1px;text-transform:uppercase;cursor:pointer;
-          transition:background .2s,border-color .2s;font-family:'DM Sans',sans-serif;
-        }
-        .hdr-logout:hover{background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.8);}
 
-        /* BODY */
-        .body{padding:36px 32px 32px;}
-        .page-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:400;color:var(--text);text-align:center;margin-bottom:4px;}
-        .page-sub{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:30px;}
-
-        /* GRID */
-        .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;}
-        .menu-btn{
-          display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;
-          padding:18px 16px 14px;border:1.5px solid var(--border);border-radius:12px;
-          background:var(--white);cursor:pointer;transition:all .22s;text-align:left;
-          position:relative;overflow:hidden;min-height:96px;
+        .shell {
+          display: flex;
+          height: 100vh;
+          overflow: hidden;
         }
-        .menu-btn::after{
-          content:'';position:absolute;top:0;left:0;right:0;height:3px;
-          background:linear-gradient(90deg,var(--teal),var(--teal-l));
-          opacity:0;transition:opacity .22s;
-        }
-        .menu-btn:hover{border-color:var(--teal);background:var(--teal-pale);transform:translateY(-2px);box-shadow:0 4px 16px rgba(42,157,127,0.15);}
-        .menu-btn:hover::after{opacity:1;}
-        .menu-icon{font-size:20px;margin-bottom:8px;}
-        .menu-label{font-size:13px;font-weight:600;color:var(--text);line-height:1.3;}
 
-        /* LOGOUT AREA */
-        .actions{display:flex;gap:12px;}
-        .btn-logout{
-          flex:1;padding:13px;border:1.5px solid var(--border);border-radius:10px;
-          background:var(--white);color:var(--muted);font-size:13px;font-weight:600;
-          letter-spacing:.5px;cursor:pointer;display:flex;align-items:center;justify-content:center;
-          gap:8px;transition:all .2s;font-family:'DM Sans',sans-serif;
+        .sidebar {
+          width: 220px;
+          flex-shrink: 0;
+          background: var(--green-dark);
+          display: flex;
+          flex-direction: column;
+          padding: 20px 14px;
+          overflow-y: auto;
         }
-        .btn-logout:hover{border-color:var(--red);color:var(--red);background:var(--red-pale);}
 
-        @media(max-width:580px){.grid{grid-template-columns:repeat(2,1fr);}}
+        .sb-brand {
+          display: flex;
+          align-items: center;
+          gap: 11px;
+          padding: 0 4px;
+          margin-bottom: 30px;
+        }
+
+        .sb-logo {
+          width: 36px; height: 36px;
+          border-radius: 10px;
+          background: linear-gradient(135deg, #3ec45a, #1a6b2e);
+          display: flex; align-items: center; justify-content: center;
+          font-family: 'Fraunces', serif;
+          font-size: 17px; font-weight: 600; color: #fff;
+          flex-shrink: 0;
+          box-shadow: 0 0 0 1px rgba(255,255,255,0.12) inset;
+        }
+
+        .sb-name {
+          font-family: 'Fraunces', serif;
+          font-size: 16px; font-weight: 600; color: #fff;
+          letter-spacing: 0.02em;
+        }
+
+        .sb-tag {
+          font-size: 8.5px; letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.28);
+          margin-top: 1px;
+        }
+
+        .sb-section {
+          font-size: 8.5px; letter-spacing: 0.2em;
+          text-transform: uppercase;
+          color: rgba(255,255,255,0.22);
+          padding: 0 8px;
+          margin: 18px 0 6px;
+        }
+
+        .sb-item {
+          display: flex;
+          align-items: center;
+          gap: 9px;
+          padding: 9px 10px;
+          border-radius: 8px;
+          cursor: pointer;
+          color: rgba(255,255,255,0.5);
+          font-size: 13px; font-weight: 500;
+          transition: background 0.15s, color 0.15s;
+          text-decoration: none;
+          user-select: none;
+        }
+
+        .sb-item:hover {
+          background: rgba(255,255,255,0.07);
+          color: rgba(255,255,255,0.88);
+        }
+
+        .sb-item.active {
+          background: var(--green-mid);
+          color: #fff;
+        }
+
+        .sb-dot {
+          width: 6px; height: 6px;
+          border-radius: 50%;
+          background: currentColor;
+          opacity: 0.65;
+          flex-shrink: 0;
+        }
+
+        .sb-dot.red { background: #e74c3c; opacity: 1; }
+
+        .sb-spacer { flex: 1; }
+
+        .sb-user {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 10px 9px;
+          border-radius: 10px;
+          background: rgba(255,255,255,0.06);
+          margin-top: 12px;
+          cursor: pointer;
+          transition: background 0.15s;
+        }
+
+        .sb-user:hover { background: rgba(255,255,255,0.1); }
+
+        .sb-avatar {
+          width: 30px; height: 30px;
+          border-radius: 50%;
+          background: var(--green-mid);
+          display: flex; align-items: center; justify-content: center;
+          font-size: 11px; color: #fff; font-weight: 600;
+          flex-shrink: 0;
+        }
+
+        .sb-uname { font-size: 12.5px; color: rgba(255,255,255,0.82); font-weight: 500; }
+        .sb-urole { font-size: 9.5px; color: rgba(255,255,255,0.3); margin-top: 1px; }
+
+        .main {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+          background: var(--bg);
+        }
+
+        .topbar {
+          background: var(--card);
+          border-bottom: 1px solid var(--border);
+          padding: 14px 28px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-shrink: 0;
+        }
+
+        .tb-title {
+          font-family: 'Fraunces', serif;
+          font-size: 20px; font-weight: 600;
+          color: var(--text);
+          letter-spacing: -0.01em;
+        }
+
+        .tb-crumb {
+          font-size: 10.5px;
+          color: var(--text-muted);
+          letter-spacing: 0.06em;
+          margin-top: 2px;
+        }
+
+        .topbar-right {
+          display: flex; align-items: center; gap: 10px;
+        }
+
+        .tb-pill {
+          background: var(--green-light);
+          border: 1px solid var(--green-border);
+          color: var(--green-mid);
+          font-size: 11px; font-weight: 600;
+          padding: 5px 14px;
+          border-radius: 20px;
+          letter-spacing: 0.06em;
+        }
+
+        .tb-logout {
+          background: transparent;
+          border: 1px solid var(--border);
+          color: var(--text-muted);
+          font-size: 11.5px; font-weight: 500;
+          padding: 6px 15px;
+          border-radius: 8px;
+          cursor: pointer;
+          font-family: 'Outfit', sans-serif;
+          letter-spacing: 0.04em;
+          transition: all 0.2s;
+        }
+
+        .tb-logout:hover {
+          border-color: var(--red);
+          color: var(--red);
+          background: var(--red-pale);
+        }
+
+        .content {
+          flex: 1;
+          padding: 24px 28px;
+          overflow-y: auto;
+        }
+
+        .kpi-row {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 12px;
+          margin-bottom: 26px;
+        }
+
+        .kpi {
+          background: var(--card);
+          border: 1px solid var(--border);
+          border-radius: 12px;
+          padding: 16px 18px;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .kpi::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0;
+          height: 3px;
+          background: var(--green-accent);
+          opacity: 0.35;
+        }
+
+        .kpi.alert::before { background: var(--red); opacity: 0.7; }
+
+        .kpi-val {
+          font-size: 26px; font-weight: 700;
+          color: var(--green-mid);
+          line-height: 1;
+        }
+
+        .kpi.alert .kpi-val { color: var(--red); }
+
+        .kpi-lbl {
+          font-size: 10px; font-weight: 600;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: var(--text-muted);
+          margin-top: 5px;
+        }
+
+        .kpi-trend {
+          font-size: 10.5px;
+          color: var(--green-accent);
+          margin-top: 8px;
+        }
+
+        .kpi.alert .kpi-trend { color: var(--red); }
+
+        .sec-hd {
+          font-size: 10px; font-weight: 600;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: var(--text-muted);
+          margin-bottom: 12px;
+        }
+
+        .mod-grid {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 10px;
+        }
+
+        .mod-card {
+          background: var(--card);
+          border: 1px solid var(--border);
+          border-radius: 13px;
+          padding: 17px 15px 14px;
+          cursor: pointer;
+          position: relative;
+          overflow: hidden;
+          transition: all 0.22s cubic-bezier(0.34, 1.3, 0.64, 1);
+          display: flex;
+          flex-direction: column;
+          min-height: 100px;
+          box-shadow: var(--shadow-sm);
+        }
+
+        .mod-card:hover {
+          border-color: var(--green-accent);
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-md);
+        }
+
+        .mod-card.danger:hover {
+          border-color: var(--red);
+          box-shadow: 0 4px 16px rgba(192,57,43,0.10);
+        }
+
+        .mod-card::before {
+          content: '';
+          position: absolute;
+          left: 0; top: 0; bottom: 0;
+          width: 3px;
+          background: var(--green-accent);
+          border-radius: 3px 0 0 3px;
+          opacity: 0;
+          transition: opacity 0.2s;
+        }
+
+        .mod-card:hover::before { opacity: 1; }
+        .mod-card.danger::before { background: var(--red); }
+
+        .mod-icon-box {
+          width: 34px; height: 34px;
+          border-radius: 9px;
+          background: var(--green-light);
+          display: flex; align-items: center; justify-content: center;
+          font-size: 15px;
+          margin-bottom: 10px;
+          flex-shrink: 0;
+        }
+
+        .mod-card.danger .mod-icon-box { background: var(--red-pale); }
+        .mod-card.warn  .mod-icon-box { background: var(--amber-pale); }
+
+        .mod-title {
+          font-size: 13px; font-weight: 600;
+          color: var(--text);
+          line-height: 1.25;
+        }
+
+        .mod-desc {
+          font-size: 10.5px;
+          color: var(--text-muted);
+          margin-top: 4px;
+          line-height: 1.4;
+        }
+
+        .mod-arrow {
+          position: absolute;
+          bottom: 12px; right: 13px;
+          font-size: 12px;
+          color: var(--green-accent);
+          opacity: 0;
+          transform: translateX(-3px);
+          transition: all 0.18s;
+        }
+
+        .mod-card:hover .mod-arrow { opacity: 1; transform: translateX(0); }
+        .mod-card.danger .mod-arrow { color: var(--red); }
+        .mod-card.warn   .mod-arrow { color: #b07a00; }
+
+        .footer-bar {
+          background: var(--card);
+          border-top: 1px solid var(--border);
+          padding: 12px 28px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-shrink: 0;
+        }
+
+        .footer-text {
+          font-size: 11px;
+          color: var(--text-muted);
+          letter-spacing: 0.06em;
+        }
+
+        .btn-logout-full {
+          background: transparent;
+          border: 1px solid var(--border);
+          color: var(--text-muted);
+          font-size: 12px; font-weight: 500;
+          padding: 8px 22px;
+          border-radius: 8px;
+          cursor: pointer;
+          font-family: 'Outfit', sans-serif;
+          display: flex; align-items: center; gap: 7px;
+          transition: all 0.2s;
+        }
+
+        .btn-logout-full:hover {
+          border-color: var(--red);
+          color: var(--red);
+          background: var(--red-pale);
+        }
+
+        @media (max-width: 768px) {
+          .sidebar { width: 180px; }
+          .kpi-row { grid-template-columns: repeat(2, minmax(0,1fr)); }
+          .mod-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+        }
+
+        @media (max-width: 540px) {
+          .sidebar { display: none; }
+          .mod-grid { grid-template-columns: minmax(0,1fr); }
+          .content { padding: 16px; }
+        }
     </style>
 </head>
 <body>
-<div class="card">
-    <div class="hdr">
-        <div class="hdr-logo-box">A</div>
-        <div class="hdr-text">
-            <div class="hdr-title">AMS</div>
-            <div class="hdr-sub">Attendance Management</div>
-        </div>
-        <button class="hdr-logout" onclick="logout()">Logout</button>
-    </div>
 
-    <div class="body">
-        <div class="page-title">Admin Dashboard</div>
-        <div class="page-sub">Admin Portal</div>
+<div class="shell">
 
-        <div class="grid">
-            <button class="menu-btn" onclick="location.href='add-student.html'">
-                <span class="menu-icon">🎓</span>
-                <span class="menu-label">Add Student</span>
-            </button>
-            <button class="menu-btn" onclick="location.href='add-subject.html'">
-                <span class="menu-icon">📚</span>
-                <span class="menu-label">Add Subject</span>
-            </button>
-            <button class="menu-btn" onclick="location.href='mark-attendance.html'">
-                <span class="menu-icon">✅</span>
-                <span class="menu-label">Mark Attendance</span>
-            </button>
-            <button class="menu-btn" onclick="location.href='view-attendanceAdmin.html'">
-                <span class="menu-icon">📊</span>
-                <span class="menu-label">View Attendance</span>
-            </button>
-            <button class="menu-btn" onclick="location.href='delete-user.html'">
-                <span class="menu-icon">🗑️</span>
-                <span class="menu-label">Delete User</span>
-            </button>
-            <button class="menu-btn" onclick="location.href='add-teacher.html'">
-                <span class="menu-icon">👨‍🏫</span>
-                <span class="menu-label">Add Teacher</span>
-            </button>
-            <button class="menu-btn" onclick="location.href='assign-subject.html'">
-                <span class="menu-icon">🔗</span>
-                <span class="menu-label">Assign Subject</span>
-            </button>
-            <button class="menu-btn" onclick="location.href='edit-attendance.html'">
-                <span class="menu-icon">✏️</span>
-                <span class="menu-label">Edit Attendance</span>
-            </button>
+    <!-- ── SIDEBAR ── -->
+    <div class="sidebar">
+        <div class="sb-brand">
+            <div class="sb-logo">A</div>
+            <div>
+                <div class="sb-name">AMS</div>
+                <div class="sb-tag">Admin Portal</div>
+            </div>
         </div>
 
-        <div class="actions">
-            <button class="btn-logout" onclick="logout()">
-                <span>↪</span> Logout
-            </button>
+        <div class="sb-section">Overview</div>
+        <div class="sb-item active"><div class="sb-dot"></div> Dashboard</div>
+
+        <div class="sb-section">Management</div>
+        <div class="sb-item" onclick="location.href='add-student.html'"><div class="sb-dot"></div> Students</div>
+        <div class="sb-item" onclick="location.href='add-teacher.html'"><div class="sb-dot"></div> Teachers</div>
+        <div class="sb-item" onclick="location.href='add-subject.html'"><div class="sb-dot"></div> Subjects</div>
+        <div class="sb-item" onclick="location.href='assign-subject.html'"><div class="sb-dot"></div> Assignments</div>
+
+        <div class="sb-section">Attendance</div>
+        <div class="sb-item" onclick="location.href='mark-attendance.html'"><div class="sb-dot"></div> Mark</div>
+        <div class="sb-item" onclick="location.href='view-attendanceAdmin.html'"><div class="sb-dot"></div> View</div>
+        <div class="sb-item" onclick="location.href='edit-attendance.html'"><div class="sb-dot"></div> Edit</div>
+        <div class="sb-item" onclick="location.href='defaulter-list.html'"><div class="sb-dot red"></div> Defaulters</div>
+
+        <div class="sb-section">System</div>
+        <div class="sb-item" onclick="location.href='delete-user.html'"><div class="sb-dot red"></div> Delete User</div>
+
+        <div class="sb-spacer"></div>
+
+        <div class="sb-user">
+            <div class="sb-avatar" id="avatarInitials">A</div>
+            <div>
+                <div class="sb-uname" id="adminName">Loading...</div>
+                <div class="sb-urole">Super User</div>
+            </div>
         </div>
     </div>
-</div>
+
+    <!-- ── MAIN ── -->
+    <div class="main">
+
+        <!-- TOP BAR -->
+        <div class="topbar">
+            <div>
+                <div class="tb-title">Admin Dashboard</div>
+                <div class="tb-crumb">AMS &nbsp;/&nbsp; Admin &nbsp;/&nbsp; Overview</div>
+            </div>
+            <div class="topbar-right">
+                <div class="tb-pill">&#9679; Active</div>
+                <button class="tb-logout" onclick="logout()">&#8617; Logout</button>
+            </div>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="content">
+
+            <div class="sec-hd">Quick actions</div>
+            <div class="mod-grid">
+
+                <div class="mod-card" onclick="location.href='add-student.html'">
+                    <div class="mod-icon-box">&#127891;</div>
+                    <div class="mod-title">Add Student</div>
+                    <div class="mod-desc">Register a new student to the system</div>
+                    <div class="mod-arrow">&#8594;</div>
+                </div>
+
+                <div class="mod-card" onclick="location.href='add-teacher.html'">
+                    <div class="mod-icon-box">&#128104;&#8205;&#127979;</div>
+                    <div class="mod-title">Add Teacher</div>
+                    <div class="mod-desc">Onboard new faculty member</div>
+                    <div class="mod-arrow">&#8594;</div>
+                </div>
+
+                <div class="mod-card" onclick="location.href='add-subject.html'">
+                    <div class="mod-icon-box">&#128218;</div>
+                    <div class="mod-title">Add Subject</div>
+                    <div class="mod-desc">Create and configure a new subject</div>
+                    <div class="mod-arrow">&#8594;</div>
+                </div>
+
+                <div class="mod-card" onclick="location.href='mark-attendance.html'">
+                    <div class="mod-icon-box">&#9989;</div>
+                    <div class="mod-title">Mark Attendance</div>
+                    <div class="mod-desc">Record daily attendance entries</div>
+                    <div class="mod-arrow">&#8594;</div>
+                </div>
+
+                <div class="mod-card" onclick="location.href='view-attendanceAdmin.html'">
+                    <div class="mod-icon-box">&#128202;</div>
+                    <div class="mod-title">View Attendance</div>
+                    <div class="mod-desc">Full attendance report & analytics</div>
+                    <div class="mod-arrow">&#8594;</div>
+                </div>
+
+                <div class="mod-card" onclick="location.href='edit-attendance.html'">
+                    <div class="mod-icon-box">&#9999;&#65039;</div>
+                    <div class="mod-title">Edit Attendance</div>
+                    <div class="mod-desc">Correct or update past records</div>
+                    <div class="mod-arrow">&#8594;</div>
+                </div>
+
+                <div class="mod-card" onclick="location.href='assign-subject.html'">
+                    <div class="mod-icon-box">&#128279;</div>
+                    <div class="mod-title">Assign Subject</div>
+                    <div class="mod-desc">Link a teacher to their subject</div>
+                    <div class="mod-arrow">&#8594;</div>
+                </div>
+
+                <div class="mod-card warn" onclick="location.href='defaulter-list.html'">
+                    <div class="mod-icon-box">&#128203;</div>
+                    <div class="mod-title">Defaulter List</div>
+                    <div class="mod-desc">Students with low attendance</div>
+                    <div class="mod-arrow">&#8594;</div>
+                </div>
+
+                <div class="mod-card danger" onclick="location.href='delete-user.html'">
+                    <div class="mod-icon-box">&#128465;&#65039;</div>
+                    <div class="mod-title">Delete User</div>
+                    <div class="mod-desc">Permanently remove an account</div>
+                    <div class="mod-arrow">&#8594;</div>
+                </div>
+
+            </div>
+        </div><!-- /content -->
+
+        <!-- FOOTER -->
+        <div class="footer-bar">
+            <div class="footer-text">AMS &nbsp;&middot;&nbsp; Attendance Management System &nbsp;&middot;&nbsp; v1.0</div>
+            <button class="btn-logout-full" onclick="logout()">
+                <span>&#8617;</span> Logout of Admin Session
+            </button>
+        </div>
+
+    </div><!-- /main -->
+</div><!-- /shell -->
 
 <script>
-    let role=localStorage.getItem("role");
-    if(role!=="admin"){alert("Access Denied! Admin Only.");window.location.href="login.html";}
-    function logout(){localStorage.removeItem("role");alert("Logged Out Successfully");window.location.href="login.html";}
+
+    // ===============================
+    // AUTH GUARD
+    // ===============================
+
+    (function () {
+        const role = localStorage.getItem("role");
+        if (role !== "admin") {
+            alert("Access Denied! Admin Only!");
+            window.location.href = "login.html";
+        }
+    })();
+
+
+    // ===============================
+    // SHOW ADMIN NAME  ← FIXED HERE
+    // ===============================
+
+    (function () {
+
+        // Tries "adminName" first, then falls back to "username"
+        // so it works no matter which key your login page saves
+        const adminName = localStorage.getItem("adminName")
+                       || localStorage.getItem("username")
+                       || "Admin";
+
+        document.getElementById("adminName").innerText = adminName;
+
+        // Build avatar initials (up to 2 letters)
+        const initials = adminName
+            .split(" ")
+            .map(word => word.charAt(0).toUpperCase())
+            .join("")
+            .substring(0, 2);
+
+        document.getElementById("avatarInitials").innerText = initials;
+
+    })();
+
+
+    // ===============================
+    // LOGOUT FUNCTION  ← FIXED HERE
+    // ===============================
+
+    function logout() {
+        const confirmLogout = confirm("Are you sure you want to logout?");
+        if (confirmLogout) {
+            localStorage.removeItem("adminName");
+            localStorage.removeItem("username");
+            localStorage.removeItem("role");
+            window.location.href = "login.html";
+        }
+    }
+
+
+    // ===============================
+    // ACTIVE SIDEBAR
+    // ===============================
+
+    (function () {
+        const path = window.location.pathname.split("/").pop();
+
+        document.querySelectorAll(".sb-item").forEach(function (item) {
+            item.classList.remove("active");
+        });
+
+        if (!path || path === "admin-dashboard.html") {
+            const items = document.querySelectorAll(".sb-item");
+            if (items.length > 0) {
+                items[0].classList.add("active");
+            }
+        }
+    })();
+
 </script>
 </body>
 </html>

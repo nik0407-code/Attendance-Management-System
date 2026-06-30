@@ -1,9 +1,11 @@
 package com.AM.demo.Controller;
 
 import com.AM.demo.Dto.AttendanceDto;
+import com.AM.demo.Dto.DefaulterDto;
 import com.AM.demo.Repository.AttendanceRepo;
 import com.AM.demo.Repository.SubjectRepo;
 import com.AM.demo.Repository.UserRepo;
+import com.AM.demo.Service.DefaulterService;
 import com.AM.demo.models.Attendance;
 import com.AM.demo.models.Subject;
 import com.AM.demo.models.User;
@@ -27,6 +29,9 @@ public class AttendanceController {
 
     @Autowired
     SubjectRepo subjectRepo;
+
+    @Autowired
+    private DefaulterService defaulterService;
 
 
     @PostMapping("/markAttendance")
@@ -113,6 +118,10 @@ public class AttendanceController {
         return ResponseEntity.ok(Map.of("success", true));
     }
 
+    @GetMapping("/defaulters")
+    public List<DefaulterDto> getDefaulters() {
+        return defaulterService.getDefaulterList();
+    }
 
 
     }

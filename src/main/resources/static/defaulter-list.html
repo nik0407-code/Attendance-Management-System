@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Defaulter List — AMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <style>
+        :root {
+          --mint: #e8f5ef;
+          --forest: #074a30;
+          --forest2: #0f6e56;
+          --teal: #1d9e75;
+          --teal-l: #52b788;
+          --teal-pale: #d8f3dc;
+          --white: #fff;
+          --text: #0a3d28;
+          --muted: #6b8f77;
+          --border: #c8e6d0;
+          --red: #c0392b;
+          --red-pale: #fdecea;
+          --amber: #d97706;
+          --amber-pale: #fef3c7;
+          --shadow: 0 12px 48px rgba(7,74,48,0.13);
+          --r: 18px;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+          font-family: 'DM Sans', sans-serif;
+          min-height: 100vh;
+          background: var(--mint);
+          background-image:
+            radial-gradient(ellipse at 20% 20%, rgba(29,158,117,0.08) 0%, transparent 60%),
+            radial-gradient(ellipse at 80% 80%, rgba(7,74,48,0.06) 0%, transparent 60%);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 28px 16px 48px;
+        }
+
+        /* ─── CARD ─── */
+        .card {
+          background: var(--white);
+          border-radius: var(--r);
+          box-shadow: var(--shadow);
+          overflow: hidden;
+          width: 100%;
+          max-width: 960px;
+          animation: fadeUp 0.45s ease both;
+        }
+
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(22px); }
+          to   { opacity: 1; transform: none; }
+        }
+
+        /* ─── HEADER ─── */
+        .hdr {
+          background: linear-gradient(135deg, var(--forest) 0%, var(--forest2) 60%, var(--teal) 100%);
+          padding: 24px 32px;
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          position: relative;
+          overflow: hidden;
+        }
+        .hdr::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0;
+          height: 3px;
+          background: linear-gradient(90deg, transparent, #9fe1cb, #5dcaa5, transparent);
+        }
+        .hdr::after {
+          content: '';
+          position: absolute;
+          top: -70px; right: -70px;
+          width: 240px; height: 240px;
+          border-radius: 50%;
+          background: radial-gradient(circle, rgba(157,225,203,0.1), transparent 70%);
+          pointer-events: none;
+        }
+        .logo-box {
+          width: 46px; height: 46px;
+          border: 1.5px solid rgba(157,225,203,0.5);
+          border-radius: 11px;
+          display: flex; align-items: center; justify-content: center;
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 24px; color: #9fe1cb;
+          background: rgba(255,255,255,0.07);
+          flex-shrink: 0;
+        }
+        .hdr-text { flex: 1; }
+        .hdr-title { font-size: 18px; font-weight: 600; color: #fff; letter-spacing: 2px; }
+        .hdr-sub { font-size: 10px; color: rgba(157,225,203,0.65); letter-spacing: 2.5px; text-transform: uppercase; margin-top: 2px; }
+        .hdr-back {
+          background: transparent;
+          border: 1.5px solid rgba(255,255,255,0.4);
+          color: #fff;
+          padding: 8px 20px;
+          border-radius: 8px;
+          font-size: 12px; font-weight: 600;
+          letter-spacing: 1px; text-transform: uppercase;
+          cursor: pointer;
+          transition: background .2s, border-color .2s;
+          font-family: 'DM Sans', sans-serif;
+        }
+        .hdr-back:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.8); }
+
+        /* ─── BODY ─── */
+        .body { padding: 36px 32px 40px; }
+
+        .page-title {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 38px; font-weight: 400;
+          color: var(--text); text-align: center;
+          margin-bottom: 4px;
+        }
+        .page-sub {
+          font-size: 10px; letter-spacing: 3.5px;
+          text-transform: uppercase; color: var(--muted);
+          text-align: center; margin-bottom: 32px;
+        }
+
+        /* ─── STATS ROW ─── */
+        .stats-row {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 14px;
+          margin-bottom: 28px;
+        }
+        .stat-card {
+          border: 1.5px solid var(--border);
+          border-radius: 12px;
+          padding: 18px 20px;
+          display: flex; align-items: center; gap: 14px;
+          background: #fafffe;
+          transition: box-shadow .2s;
+        }
+        .stat-card:hover { box-shadow: 0 4px 18px rgba(7,74,48,0.09); }
+        .stat-icon {
+          width: 42px; height: 42px;
+          border-radius: 10px;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 20px;
+          flex-shrink: 0;
+        }
+        .stat-icon.red  { background: var(--red-pale); }
+        .stat-icon.amber{ background: var(--amber-pale); }
+        .stat-icon.green{ background: var(--teal-pale); }
+        .stat-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+        .stat-value { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 600; color: var(--text); line-height: 1; }
+
+        /* ─── FILTERS ─── */
+        .filters {
+          display: flex; gap: 12px; flex-wrap: wrap;
+          margin-bottom: 22px; align-items: center;
+        }
+        .filters label { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+        .filters select, .filters input {
+          border: 1.5px solid var(--border);
+          border-radius: 8px;
+          padding: 9px 14px;
+          font-size: 13px;
+          font-family: 'DM Sans', sans-serif;
+          color: var(--text);
+          background: #fafffe;
+          outline: none;
+          transition: border-color .2s;
+          min-width: 160px;
+        }
+        .filters select:focus, .filters input:focus { border-color: var(--teal); }
+        .filters .spacer { flex: 1; }
+        .btn-refresh {
+          background: linear-gradient(135deg, var(--forest), var(--forest2));
+          color: #e8faf4;
+          border: none;
+          border-radius: 8px;
+          padding: 9px 20px;
+          font-size: 12px; font-weight: 600;
+          letter-spacing: 1px; text-transform: uppercase;
+          cursor: pointer;
+          font-family: 'DM Sans', sans-serif;
+          transition: opacity .2s, transform .15s;
+          display: flex; align-items: center; gap: 7px;
+        }
+        .btn-refresh:hover { opacity: .88; transform: scale(1.03); }
+
+        /* ─── TABLE WRAP ─── */
+        .table-wrap {
+          border: 1.5px solid var(--border);
+          border-radius: 14px;
+          overflow: hidden;
+        }
+        .table-top {
+          display: flex; align-items: center; justify-content: space-between;
+          padding: 14px 22px;
+          background: #f0faf6;
+          border-bottom: 1px solid var(--border);
+        }
+        .table-top-title {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 17px; font-weight: 400; color: var(--text);
+        }
+        .table-top-badge {
+          background: var(--red-pale);
+          color: var(--red);
+          font-size: 11px; font-weight: 600;
+          padding: 4px 12px; border-radius: 20px;
+          letter-spacing: .5px;
+        }
+
+        table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        thead { background: #f7fdf9; }
+        th {
+          padding: 12px 18px;
+          font-size: 9px; font-weight: 600;
+          letter-spacing: 2.5px; text-transform: uppercase;
+          color: var(--forest2);
+          border-bottom: 1.5px solid #9fe1cb;
+          text-align: left;
+          white-space: nowrap;
+        }
+        td {
+          padding: 13px 18px;
+          font-size: 13px;
+          color: #3a6a50;
+          border-bottom: 1px solid #eaf7f0;
+          transition: background .15s;
+        }
+        tbody tr:hover td { background: #f2fbf7; }
+        tbody tr:last-child td { border-bottom: none; }
+
+        .roll-badge {
+          display: inline-block;
+          background: var(--teal-pale);
+          color: var(--forest2);
+          font-size: 11px; font-weight: 600;
+          padding: 3px 10px; border-radius: 6px;
+          letter-spacing: .5px;
+        }
+
+        /* ─── PROGRESS BAR ─── */
+        .progress-wrap {
+          display: flex; align-items: center; gap: 10px;
+        }
+        .progress-bar {
+          flex: 1; height: 6px;
+          background: #e4f5ec;
+          border-radius: 10px;
+          overflow: hidden;
+          min-width: 80px;
+        }
+        .progress-fill {
+          height: 100%;
+          border-radius: 10px;
+          transition: width .4s ease;
+        }
+        .fill-danger { background: linear-gradient(90deg, #e05a4e, var(--red)); }
+        .fill-warning { background: linear-gradient(90deg, #f59e0b, var(--amber)); }
+        .fill-safe   { background: linear-gradient(90deg, var(--teal-l), var(--teal)); }
+
+        .pct-text {
+          font-size: 13px; font-weight: 600; min-width: 40px; text-align: right;
+        }
+        .pct-danger  { color: var(--red); }
+        .pct-warning { color: var(--amber); }
+        .pct-safe    { color: var(--teal); }
+
+        /* ─── STATUS CHIP ─── */
+        .chip {
+          display: inline-block;
+          padding: 4px 12px; border-radius: 20px;
+          font-size: 10px; font-weight: 600; letter-spacing: .5px;
+          text-transform: uppercase;
+        }
+        .chip-danger  { background: var(--red-pale);   color: var(--red); }
+        .chip-warning { background: var(--amber-pale); color: var(--amber); }
+        .chip-safe    { background: var(--teal-pale);  color: var(--forest2); }
+
+        /* ─── EMPTY / LOADING ─── */
+        .state-box {
+          text-align: center; padding: 56px 24px;
+        }
+        .state-icon { font-size: 48px; margin-bottom: 14px; }
+        .state-title {
+          font-family: 'Cormorant Garamond', serif;
+          font-size: 24px; color: var(--text); margin-bottom: 6px;
+        }
+        .state-sub { font-size: 13px; color: var(--muted); }
+
+        .spinner {
+          width: 36px; height: 36px;
+          border: 3px solid var(--border);
+          border-top-color: var(--teal);
+          border-radius: 50%;
+          animation: spin .7s linear infinite;
+          margin: 0 auto 16px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ─── FOOTER ─── */
+        .footer {
+          margin-top: 28px;
+          display: flex; justify-content: flex-end; align-items: center; gap: 12px;
+        }
+        .btn-back {
+          border: 1.5px solid var(--border);
+          border-radius: 8px;
+          background: var(--white);
+          color: var(--muted);
+          font-size: 12px; font-weight: 600;
+          letter-spacing: 1px; text-transform: uppercase;
+          padding: 10px 22px;
+          cursor: pointer;
+          font-family: 'DM Sans', sans-serif;
+          display: flex; align-items: center; gap: 7px;
+          transition: all .2s;
+        }
+        .btn-back:hover { border-color: var(--teal); color: var(--forest2); background: var(--teal-pale); }
+
+        .btn-export {
+          background: linear-gradient(135deg, var(--forest), var(--forest2));
+          color: #e8faf4;
+          border: none;
+          border-radius: 8px;
+          padding: 10px 22px;
+          font-size: 12px; font-weight: 600;
+          letter-spacing: 1px; text-transform: uppercase;
+          cursor: pointer;
+          font-family: 'DM Sans', sans-serif;
+          display: flex; align-items: center; gap: 7px;
+          transition: opacity .2s;
+        }
+        .btn-export:hover { opacity: .85; }
+
+        /* ─── MINT DIVIDER ─── */
+        .mint-line {
+          height: 1px;
+          background: linear-gradient(90deg, transparent, #9fe1cb, transparent);
+          margin: 28px 0;
+          opacity: .7;
+        }
+
+        @media(max-width:640px){
+          .body { padding: 24px 18px 28px; }
+          .stats-row { grid-template-columns: 1fr 1fr; }
+          .filters { flex-direction: column; align-items: stretch; }
+          .filters select, .filters input { min-width: unset; width: 100%; }
+          th, td { padding: 10px 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+
+    <!-- HEADER -->
+    <div class="hdr">
+        <div class="logo-box">A</div>
+        <div class="hdr-text">
+            <div class="hdr-title">AMS</div>
+            <div class="hdr-sub">Attendance Management System</div>
+        </div>
+        <button class="hdr-back" onclick="goBack()">← Back</button>
+    </div>
+
+    <!-- BODY -->
+    <div class="body">
+        <div class="page-title">Defaulter List</div>
+        <div class="page-sub">Students Below 75% Attendance Threshold</div>
+
+        <!-- STATS -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon red">🚨</div>
+                <div>
+                    <div class="stat-label">Defaulters</div>
+                    <div class="stat-value" id="statDefaulters">—</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon amber">⚠️</div>
+                <div>
+                    <div class="stat-label">At Risk (75–80%)</div>
+                    <div class="stat-value" id="statAtRisk">—</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">✅</div>
+                <div>
+                    <div class="stat-label">Total Students</div>
+                    <div class="stat-value" id="statTotal">—</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FILTERS -->
+        <div class="filters">
+            <label>Subject</label>
+            <select id="filterSubject" onchange="renderTable()">
+                <option value="">All Subjects</option>
+            </select>
+            <label>Show</label>
+            <select id="filterShow" onchange="renderTable()">
+                <option value="defaulters">Defaulters Only (&lt;75%)</option>
+                <option value="atrisk">At Risk (75–80%)</option>
+                <option value="all">All Students</option>
+            </select>
+            <input type="text" id="filterSearch" placeholder="🔍  Search by name or roll no…" oninput="renderTable()"/>
+            <div class="spacer"></div>
+            <button class="btn-refresh" onclick="loadData()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 013.51 15"/>
+                </svg>
+                Refresh
+            </button>
+        </div>
+
+        <!-- TABLE -->
+        <div class="table-wrap">
+            <div class="table-top">
+                <span class="table-top-title">Student Attendance Summary</span>
+                <span class="table-top-badge" id="tableCount">Loading…</span>
+            </div>
+
+            <!-- Loading state -->
+            <div class="state-box" id="stateLoading">
+                <div class="spinner"></div>
+                <div class="state-title">Fetching Records</div>
+                <div class="state-sub">Calculating attendance percentages…</div>
+            </div>
+
+            <!-- Empty state -->
+            <div class="state-box" id="stateEmpty" style="display:none">
+                <div class="state-icon">🎉</div>
+                <div class="state-title">No Defaulters Found</div>
+                <div class="state-sub">All students meet the 75% attendance requirement.</div>
+            </div>
+
+            <!-- Data table -->
+            <div style="overflow-x:auto; display:none" id="tableContainer">
+                <table id="mainTable">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Roll No</th>
+                        <th>Student Name</th>
+                        <th>Contact</th>
+                        <th>Subject</th>
+                        <th>Present</th>
+                        <th>Total</th>
+                        <th>Attendance %</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mint-line"></div>
+
+        <!-- FOOTER ACTIONS -->
+        <div class="footer">
+            <button class="btn-back" onclick="goBack()">
+                ← Dashboard
+            </button>
+            <button class="btn-export" onclick="exportCSV()">
+                ↓ Export CSV
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    /* ==========================================
+     CONFIG
+  ========================================== */
+
+  const API = "http://localhost:8080";
+
+  const THRESHOLD = 75;
+  const ATRISK = 80;
+
+  let summaryRows = [];
+
+  /* ==========================================
+     ROLE GUARD
+  ========================================== */
+
+  const role = localStorage.getItem("role");
+
+  if (
+      role !== "admin" &&
+      role !== "teacher" &&
+      role !== "student"
+  ) {
+      alert("Access Denied!");
+      window.location.href = "login.html";
+  }
+
+  /* ==========================================
+     BACK BUTTON
+  ========================================== */
+
+  function goBack() {
+
+      if (role === "admin") {
+          window.location.href = "admin-dashboard.html";
+      }
+      else if (role === "teacher") {
+          window.location.href = "teacher-dashboard.html";
+      }
+      else {
+          window.location.href = "student-dashboard.html";
+      }
+
+  }
+
+  /* ==========================================
+     LOAD DATA
+  ========================================== */
+
+  async function loadData() {
+
+      showState("loading");
+
+      try {
+
+          const response = await fetch(`${API}/defaulters`);
+
+          if (!response.ok) {
+              throw new Error("HTTP Error : " + response.status);
+          }
+
+          summaryRows = await response.json();
+
+
+
+          populateSubjectFilter();
+
+          renderTable();
+
+      }
+
+      catch (error) {
+
+          console.error(error);
+
+          showState("empty");
+
+          document.querySelector("#stateEmpty .state-icon").textContent = "⚠️";
+
+          document.querySelector("#stateEmpty .state-title").textContent =
+              "Unable to fetch data";
+
+          document.querySelector("#stateEmpty .state-sub").textContent =
+              "Check Spring Boot Server.";
+
+      }
+
+  }
+
+  /* ==========================================
+     SUBJECT FILTER
+  ========================================== */
+
+  function populateSubjectFilter() {
+
+      const subjects = [
+          "All Subjects",
+          ...new Set(
+              summaryRows
+                  .filter(r => r.subject !== "All Subjects")
+                  .map(r => r.subject)
+          )
+      ];
+
+      const select = document.getElementById("filterSubject");
+
+      select.innerHTML = "";
+
+      subjects.forEach(subject => {
+
+          const option = document.createElement("option");
+
+          option.value = subject;
+
+          option.textContent = subject;
+
+          select.appendChild(option);
+
+      });
+
+  }
+
+    /* ==========================================
+   RENDER TABLE
+========================================== */
+
+function renderTable() {
+
+    const subjectFilter =
+        document.getElementById("filterSubject").value;
+
+    const showFilter =
+        document.getElementById("filterShow").value;
+
+    const search =
+        document.getElementById("filterSearch")
+            .value
+            .toLowerCase();
+
+    let rows = [...summaryRows];
+
+    // ==========================
+    // SUBJECT FILTER
+    // ==========================
+
+    if (subjectFilter === "All Subjects") {
+
+        rows = rows.filter(
+            r => r.subject === "All Subjects"
+        );
+
+    } else {
+
+        rows = rows.filter(
+            r => r.subject === subjectFilter
+        );
+
+    }
+
+    // ==========================
+    // STATUS FILTER
+    // ==========================
+
+    if (showFilter === "defaulters") {
+
+        rows = rows.filter(
+            r => r.percentage < THRESHOLD
+        );
+
+    }
+    else if (showFilter === "atrisk") {
+
+        rows = rows.filter(
+            r => r.percentage >= THRESHOLD &&
+                 r.percentage < ATRISK
+        );
+
+    }
+
+    // ==========================
+    // SEARCH
+    // ==========================
+
+    if (search.length > 0) {
+
+        rows = rows.filter(r =>
+
+            r.name.toLowerCase().includes(search) ||
+
+            String(r.rollno).includes(search)
+
+        );
+
+    }
+
+    // ==========================
+    // STATISTICS
+    // ==========================
+
+    const combined =
+        summaryRows.filter(
+            r => r.subject === "All Subjects"
+        );
+
+    document.getElementById("statTotal").textContent =
+        combined.length;
+
+    document.getElementById("statDefaulters").textContent =
+        combined.filter(
+            r => r.percentage < THRESHOLD
+        ).length;
+
+    document.getElementById("statAtRisk").textContent =
+        combined.filter(
+            r => r.percentage >= THRESHOLD &&
+                 r.percentage < ATRISK
+        ).length;
+
+    // ==========================
+    // EMPTY STATE
+    // ==========================
+
+    if (rows.length === 0) {
+
+        showState("empty");
+
+        document.getElementById("tableCount")
+            .textContent = "0 records";
+
+        return;
+
+    }
+
+    showState("table");
+
+    document.getElementById("tableCount")
+        .textContent =
+        rows.length + " Records";
+
+    const tbody =
+        document.getElementById("tableBody");
+
+    tbody.innerHTML = "";
+
+    // ==========================
+    // TABLE
+    // ==========================
+
+    rows.forEach((r, index) => {
+
+        let chipClass = "chip-safe";
+        let fillClass = "fill-safe";
+        let pctClass = "pct-safe";
+
+        if (r.percentage < THRESHOLD) {
+
+            chipClass = "chip-danger";
+            fillClass = "fill-danger";
+            pctClass = "pct-danger";
+
+        }
+        else if (r.percentage < ATRISK) {
+
+            chipClass = "chip-warning";
+            fillClass = "fill-warning";
+            pctClass = "pct-warning";
+
+        }
+
+        tbody.innerHTML += `
+
+<tr>
+
+<td>${index + 1}</td>
+
+<td>
+<span class="roll-badge">
+${r.rollno}
+</span>
+</td>
+
+<td style="font-weight:600;">
+${r.name}
+</td>
+
+<td>
+${r.contact ?? "-"}
+</td>
+
+<td>
+${r.subject}
+</td>
+
+<td>
+${r.present}
+</td>
+
+<td>
+${r.total}
+</td>
+
+<td>
+
+<div class="progress-wrap">
+
+<div class="progress-bar">
+
+<div
+class="progress-fill ${fillClass}"
+style="width:${r.percentage}%">
+</div>
+
+</div>
+
+<span class="pct-text ${pctClass}">
+${r.percentage}%
+</span>
+
+</div>
+
+</td>
+
+<td>
+
+<span class="chip ${chipClass}">
+${r.attendanceStatus}
+</span>
+
+</td>
+
+</tr>
+
+`;
+
+    });
+
+}
+
+    /* ==========================================
+   STATE HELPERS
+========================================== */
+
+function showState(state) {
+
+    document.getElementById("stateLoading").style.display =
+        state === "loading" ? "block" : "none";
+
+    document.getElementById("stateEmpty").style.display =
+        state === "empty" ? "block" : "none";
+
+    document.getElementById("tableContainer").style.display =
+        state === "table" ? "block" : "none";
+
+}
+
+/* ==========================================
+   EXPORT CSV
+========================================== */
+function exportCSV() {
+
+    let rows = [...summaryRows];
+
+    const subjectFilter = document.getElementById("filterSubject").value;
+    const showFilter = document.getElementById("filterShow").value;
+    const search = document.getElementById("filterSearch").value.toLowerCase();
+
+    // Subject Filter
+    if (subjectFilter === "All Subjects") {
+        rows = rows.filter(r => r.subject === "All Subjects");
+    } else if (subjectFilter !== "") {
+        rows = rows.filter(r => r.subject === subjectFilter);
+    }
+
+    // Status Filter
+    if (showFilter === "defaulters") {
+        rows = rows.filter(r => r.percentage < 75);
+    } else if (showFilter === "atrisk") {
+        rows = rows.filter(r => r.percentage >= 75 && r.percentage < 80);
+    }
+
+    // Search Filter
+    if (search) {
+        rows = rows.filter(r =>
+            r.name.toLowerCase().includes(search) ||
+            String(r.rollno).includes(search)
+        );
+    }
+
+    // CSV Header
+   let csv =
+"Roll No;Name;Contact;Subject;Present;Total;Percentage;Status\n";
+
+    // CSV Data
+    rows.forEach(r => {
+
+       csv += `${r.rollno};${r.name};${r.contact};${r.subject};${r.present};${r.total};${r.percentage}%;${r.attendanceStatus}\n`;
+
+    });
+
+    const blob = new Blob([csv], {
+        type: "text/csv;charset=utf-8;"
+    });
+
+    const link = document.createElement("a");
+
+    link.href = URL.createObjectURL(blob);
+
+    link.download = "defaulter-list.csv";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+}
+
+
+/* ==========================================
+   REFRESH BUTTON
+========================================== */
+
+function refreshPage() {
+
+    loadData();
+
+}
+
+/* ==========================================
+   INIT
+========================================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    loadData();
+
+});
+</script>
+</body>
+</html>
